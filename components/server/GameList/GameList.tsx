@@ -15,7 +15,7 @@ export default async function GameList() {
         *,
         players:game_player!inner (
             id:player_id, team:team_id, player:players!player_id(name, created_at)),
-            game_goals:goals!inner(player_id, is_own_goal, game_player!inner(team_id))
+            game_goals:goals!inner(player_id, is_own_goal, time, game_player!inner(team_id))
         )
     `,
     )

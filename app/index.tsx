@@ -21,8 +21,9 @@ export default function Index() {
 }
 
 const styles = StyleSheet.create({
-  gameListHolder: { width: "50%", paddingBottom: 20, flex: 1 },
+  gameListHolder: { minWidth: "50%", flex: 1 },
   container: {
+    paddingHorizontal: 10,
     alignItems: "center",
     maxHeight: "100%",
   },
