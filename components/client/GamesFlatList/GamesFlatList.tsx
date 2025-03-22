@@ -87,29 +87,43 @@ const GamesFlatList = ({ games }: Props) => {
                         : acc;
                     }, 0);
                     return (
-                      <Text
+                      <View
                         style={[
                           styles.player,
-                          styles.text,
                           {
-                            textShadowColor:
-                              player.team === 1 ? "#511d1d" : BLUE_COLOR,
-                            textShadowRadius: 4,
                             backgroundColor:
                               player.team === 1
                                 ? RED_COLOR
                                 : player.team === 2
                                   ? BLUE_COLOR
                                   : "#8e8479",
+                          },
+                        ]}
+                      >
+                        <Text
+                          style={[
+                            styles.text,
+                            {
+                              color:
+                                player.team === 1
+                                  ? BRIGHT_RED_COLOR
+                                  : DARK_BLUE_COLOR,
+                            },
+                          ]}
+                        >{`${player.id}: `}</Text>
+                        <Text
+                          style={{
+                            flex: 1,
+                            textAlign: "right",
                             color:
                               player.team === 1
                                 ? BRIGHT_RED_COLOR
                                 : DARK_BLUE_COLOR,
-                          },
-                        ]}
-                      >
-                        {`${player.id}: ${playerGoals}`}
-                      </Text>
+                          }}
+                        >
+                          {playerGoals}
+                        </Text>
+                      </View>
                     );
                   })}
                 </View>
@@ -248,6 +262,7 @@ const styles = StyleSheet.create({
     textAlign: "right",
   },
   player: {
+    flexDirection: "row",
     padding: 3,
     borderRadius: 3,
     fontWeight: "500",
