@@ -5,6 +5,8 @@ import "server-only";
 import { supabase } from "@/actions/render-info";
 import PlayerInfoDetails from "@/components/client/PlayerInfoDetails/PlayerInfoDetails";
 
+const HARD_LIMIT = 40;
+
 export type PlayerInfo = {
   id: string;
   created_at: string;
@@ -50,7 +52,10 @@ export default async function PlayerInfo({
     .or(`player_id.eq.${playerId?.toString()}`, {
       referencedTable: "games.game_player",
     })
-    .limit(gameLimit, { referencedTable: "games" })
+    // .order("id", { referencedTable: "games", ascending: false })
+    .limit(gameLimit < HARD_LIMIT ? gameLimit : HARD_LIMIT, {
+      referencedTable: "games",
+    })
     .maybeSingle()
     .overrideTypes<PlayerInfo>();
 
@@ -59,5 +64,6 @@ export default async function PlayerInfo({
 
   // return <Text style={{ color: "white" }}>{"huh"}</Text>;
 
+  //@ts-ignore experimental
   return <PlayerInfoDetails player={data} gameLimit={gameLimit} />;
 }

@@ -10,14 +10,49 @@ import {
   View,
 } from "react-native";
 import { useSelectedPlayerStore } from "@/zustand/selectedPlayer/selectedPlayerSlice";
-import React from "react";
+import React, { useState } from "react";
 import PlayerInfo from "@/components/server/PlayerInfo/PlayerInfo";
 import { AntDesign, FontAwesome } from "@expo/vector-icons";
 import Animated, { LinearTransition } from "react-native-reanimated";
 
+const GameLimitTouchable = ({
+  id,
+  selectedId,
+  onPress,
+}: {
+  id: number;
+  selectedId: number;
+  onPress: () => void;
+}) => {
+  const isSelected = id === selectedId;
+  return (
+    <TouchableOpacity
+      style={[
+        styles.lastGamesTouchable,
+        {
+          backgroundColor: isSelected ? "#c6c6c6" : "#252525",
+        },
+      ]}
+      onPress={onPress}
+    >
+      <Text
+        style={{
+          fontSize: 15,
+          lineHeight: 15,
+          color: isSelected ? "#000000" : "#efefef",
+        }}
+      >
+        {id}
+      </Text>
+    </TouchableOpacity>
+  );
+};
+
 const SelectedPlayerHolder = () => {
   const playerId = useSelectedPlayerStore((state) => state.id);
   const setSelectedPlayerId = useSelectedPlayerStore((state) => state.set);
+
+  const [gameLimit, setGameLimit] = useState(5);
 
   const handleCloseButton = () => {
     setSelectedPlayerId(undefined);
@@ -33,6 +68,34 @@ const SelectedPlayerHolder = () => {
         </TouchableOpacity>
       </View>
       <View style={styles.separator} />
+      <View
+        style={{
+          alignItems: "center",
+          gap: 10,
+          flexDirection: "row",
+          justifyContent: "flex-end",
+          marginRight: 16,
+        }}
+      >
+        <Text style={styles.lastGamesText}>{"Last"}</Text>
+        <GameLimitTouchable
+          id={5}
+          selectedId={gameLimit}
+          onPress={() => setGameLimit(5)}
+        />
+        <GameLimitTouchable
+          id={10}
+          selectedId={gameLimit}
+          onPress={() => setGameLimit(10)}
+        />
+        <GameLimitTouchable
+          id={15}
+          selectedId={gameLimit}
+          onPress={() => setGameLimit(15)}
+        />
+        <Text style={styles.lastGamesText}>{"games"}</Text>
+      </View>
+      <Text style={styles.text}>{`Last ${gameLimit} matches:`}</Text>
 
       <ScrollView style={styles.playerInfoHolder}>
         <React.Suspense
@@ -41,7 +104,7 @@ const SelectedPlayerHolder = () => {
             <ActivityIndicator />
           }
         >
-          {PlayerInfo({ playerId })}
+          {PlayerInfo({ playerId, gameLimit })}
           {/*<PlayerInfo playerId={selectedPlayerId} />*/}
         </React.Suspense>
       </ScrollView>
@@ -52,6 +115,20 @@ const SelectedPlayerHolder = () => {
 export default SelectedPlayerHolder;
 
 const styles = StyleSheet.create({
+  lastGamesTouchable: {
+    alignItems: "center",
+    justifyContent: "center",
+    width: 24,
+    height: 24,
+    borderRadius: 5,
+  },
+  lastGamesText: {
+    color: "#d6d6d6",
+    fontSize: 14,
+  },
+  text: {
+    color: "#fff",
+  },
   separator: {
     marginRight: 16,
     borderTopWidth: 1,

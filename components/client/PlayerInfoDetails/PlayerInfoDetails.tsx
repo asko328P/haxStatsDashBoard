@@ -22,8 +22,8 @@ const StatHolder = ({
 const Win = ({ item }: { item: PlayerInfo["games"][0] }) => {
   const matchWon = item.winning_team_id === item.game_player[0].team_id;
   const winDate = new Date(item.created_at);
-  const winDateDay = winDate.getDay().toString().padStart(2, "0");
-  const winDateMonth = winDate.getMonth().toString().padStart(2, "0");
+  const winDateDay = winDate.getDate().toString().padStart(2, "0");
+  const winDateMonth = (winDate.getMonth() + 1).toString().padStart(2, "0");
   const winDateString = `${winDateDay}.${winDateMonth}`;
   return (
     <View style={styles.winContainer}>
@@ -44,7 +44,10 @@ const Win = ({ item }: { item: PlayerInfo["games"][0] }) => {
           {matchWon ? "W" : "L"}
         </Text>
       </View>
-      <Text style={styles.winDate}>{winDateString}</Text>
+      <Text style={styles.winDate}>
+        {winDateString}
+        {/*{item.created_at}*/}
+      </Text>
     </View>
   );
 };
@@ -81,7 +84,7 @@ const PlayerInfoDetails = ({ player, gameLimit }: Props) => {
   });
   return (
     <Animated.View entering={FadeIn} style={styles.container}>
-      <Text style={styles.text}>{`Last ${gameLimit} matches:`}</Text>
+      {/*<Text style={styles.text}>{`Last ${gameLimit} matches:`}</Text>*/}
       <View style={styles.winsHolder}>
         {player.games.map((item) => {
           return <Win item={item} />;
