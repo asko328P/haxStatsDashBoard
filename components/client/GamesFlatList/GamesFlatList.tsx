@@ -1,32 +1,17 @@
 "use client";
 
-import { FlatList, StyleSheet, Text, View } from "react-native";
+import {
+  FlatList,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import { convertMiliseconds, dateToString } from "@/utility/utilityFunctions";
 import { useMemo } from "react";
+import { useSelectedPlayerStore } from "@/zustand/selectedPlayer/selectedPlayerSlice";
+import { Game } from "@/components/server/GameList/GameList";
 
-export type Game = {
-  id: number;
-  created_at: string;
-  ended_at: string;
-  time?: number;
-  winning_team_id: number;
-  players: {
-    id: string;
-    team: number;
-    player: {
-      name: string;
-      created_at: string;
-    };
-  }[];
-  game_goals: {
-    time?: number;
-    player_id: string;
-    game_player: {
-      team_id: number;
-    };
-    is_own_goal: boolean;
-  }[];
-};
 type Props = {
   games: Game[] | null;
 };
@@ -37,6 +22,11 @@ const BRIGHT_RED_COLOR = "#fbcdc8";
 const DARK_BLUE_COLOR = "#07273a";
 
 const GamesFlatList = ({ games }: Props) => {
+  const setSelectedPlayerId = useSelectedPlayerStore((state) => state.set);
+  const handlePlayerPress = (id: string) => {
+    setSelectedPlayerId(id);
+  };
+
   return (
     <FlatList
       showsHorizontalScrollIndicator={false}
@@ -46,7 +36,7 @@ const GamesFlatList = ({ games }: Props) => {
       renderItem={({ item }) => {
         let redScore = 0;
         let blueScore = 0;
-        item.game_goals.forEach((goal) => {
+        item.goals.forEach((goal) => {
           if (goal.game_player.team_id === 1 && !goal.is_own_goal) {
             redScore += 1;
           }
@@ -54,7 +44,7 @@ const GamesFlatList = ({ games }: Props) => {
             blueScore += 1;
           }
         });
-        item.game_goals.forEach((goal) => {
+        item.goals.forEach((goal) => {
           if (goal.game_player.team_id === 2 && !goal.is_own_goal) {
             blueScore += 1;
           }
@@ -69,7 +59,7 @@ const GamesFlatList = ({ games }: Props) => {
         }
 
         return (
-          <View style={styles.renderItem}>
+          <View key={item.id} style={styles.renderItem}>
             <Text style={styles.gameIdText}>{`game id: ${item.id}`}</Text>
             {/*<Text style={{ color: "red" }}>{JSON.stringify(item)}</Text>*/}
 
@@ -77,17 +67,19 @@ const GamesFlatList = ({ games }: Props) => {
               <View style={styles.playersHolder}>
                 <Text style={{ color: "#9a9a9a" }}>{"Players: "}</Text>
                 <View style={{ gap: 4 }}>
-                  {item.players.map((player) => {
+                  {item.game_player.map((player) => {
                     if (player.team === 0) {
                       return;
                     }
-                    const playerGoals = item.game_goals.reduce((acc, cur) => {
+                    const playerGoals = item.goals.reduce((acc, cur) => {
                       return cur.player_id === player.id && !cur.is_own_goal
                         ? acc + 1
                         : acc;
                     }, 0);
                     return (
-                      <View
+                      <TouchableOpacity
+                        key={player.id}
+                        onPress={() => handlePlayerPress(player.id)}
                         style={[
                           styles.player,
                           {
@@ -123,7 +115,7 @@ const GamesFlatList = ({ games }: Props) => {
                         >
                           {playerGoals}
                         </Text>
-                      </View>
+                      </TouchableOpacity>
                     );
                   })}
                 </View>
@@ -170,7 +162,7 @@ const GamesFlatList = ({ games }: Props) => {
 
                 <View style={styles.separator} />
 
-                {item.game_goals.map((goal, index) => {
+                {item.goals.map((goal, index) => {
                   const shouldShowRedGoal =
                     (goal.game_player.team_id === 1 && !goal.is_own_goal) ||
                     (goal.game_player.team_id === 2 && goal.is_own_goal);
@@ -179,6 +171,7 @@ const GamesFlatList = ({ games }: Props) => {
                     (goal.game_player.team_id === 1 && goal.is_own_goal);
                   return (
                     <View
+                      key={goal.id}
                       style={[
                         styles.goal,
                         index % 2 === 0 && { backgroundColor: "#353535" },
