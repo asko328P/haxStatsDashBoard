@@ -249,8 +249,6 @@ export default GamesFlatList;
 
 const styles = StyleSheet.create({
   goalPlayerName: {
-    textShadowColor: "#5a5a5a",
-    textShadowRadius: 2,
     textAlign: "center",
   },
   gameIdText: {
