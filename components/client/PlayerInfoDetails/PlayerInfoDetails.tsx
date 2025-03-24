@@ -12,21 +12,30 @@ const StatHolder = ({
   value: string | number;
 }) => {
   return (
-    <View style={styles.statHolder}>
+    <Animated.View entering={FadeIn} style={styles.statHolder}>
       <Text style={styles.statText}>{label}</Text>
       <Text style={styles.statValue}>{value}</Text>
-    </View>
+    </Animated.View>
   );
 };
 
-const Win = ({ item }: { item: PlayerInfo["games"][0] }) => {
+const Win = ({
+  item,
+  index,
+}: {
+  item: PlayerInfo["games"][0];
+  index: number;
+}) => {
   const matchWon = item.winning_team_id === item.game_player[0].team_id;
   const winDate = new Date(item.created_at);
   const winDateDay = winDate.getDate().toString().padStart(2, "0");
   const winDateMonth = (winDate.getMonth() + 1).toString().padStart(2, "0");
   const winDateString = `${winDateDay}.${winDateMonth}`;
   return (
-    <View style={styles.winContainer}>
+    <Animated.View
+      entering={FadeIn.delay(index * 60)}
+      style={styles.winContainer}
+    >
       <View
         style={[
           styles.win,
@@ -48,7 +57,7 @@ const Win = ({ item }: { item: PlayerInfo["games"][0] }) => {
         {winDateString}
         {/*{item.created_at}*/}
       </Text>
-    </View>
+    </Animated.View>
   );
 };
 
@@ -86,8 +95,10 @@ const PlayerInfoDetails = ({ player, gameLimit }: Props) => {
     <Animated.View entering={FadeIn} style={styles.container}>
       {/*<Text style={styles.text}>{`Last ${gameLimit} matches:`}</Text>*/}
       <View style={styles.winsHolder}>
-        {player.games.map((item) => {
-          return <Win key={item.id} item={item} />;
+        {player.games.map((item, index) => {
+          return (
+            <Win key={`${item.id}${gameLimit}`} item={item} index={index} />
+          );
         })}
       </View>
       <View style={styles.allStatsHolder}>
@@ -152,7 +163,7 @@ const styles = StyleSheet.create({
     height: 26,
     justifyContent: "center",
     alignItems: "center",
-    aspectRatio: 1,
+    // aspectRatio: 1,
     padding: 6,
     borderRadius: 2,
   },
