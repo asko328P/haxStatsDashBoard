@@ -87,7 +87,7 @@ const PlayerInfoDetails = ({ player, gameLimit }: Props) => {
       {/*<Text style={styles.text}>{`Last ${gameLimit} matches:`}</Text>*/}
       <View style={styles.winsHolder}>
         {player.games.map((item) => {
-          return <Win item={item} />;
+          return <Win key={item.id} item={item} />;
         })}
       </View>
       <View style={styles.allStatsHolder}>

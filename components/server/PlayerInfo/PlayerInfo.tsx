@@ -42,7 +42,7 @@ export default async function PlayerInfo({
     .from("players")
     .select(
       `*,
-      games!inner(*, goals!inner(*), game_player!left(*))
+      games!inner(*, goals!left(*), game_player!inner(*))
     `,
     )
     .eq("id", playerId)
