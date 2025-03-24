@@ -56,6 +56,10 @@ export default async function PlayerInfo({
     .limit(gameLimit < HARD_LIMIT ? gameLimit : HARD_LIMIT, {
       referencedTable: "games",
     })
+    .order("id", {
+      referencedTable: "games",
+      ascending: false,
+    })
     .maybeSingle()
     .overrideTypes<PlayerInfo>();
 
