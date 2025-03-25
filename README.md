@@ -3,7 +3,12 @@
 A dashboard app made with React Native, meant to monitor current ongoing and past games,
 record specific game events and presenting them in a visually pleasing manner.
 
-[//]: # (## Demo)
+Demo
+    A version of this dashboard is hosted by Expos services under the following link:
+    [https://haxstats.expo.app/](https://haxstats.expo.app/)
+
+    
+<img width="1579" alt="Screenshot 2025-03-25 at 01 01 02" src="https://github.com/user-attachments/assets/adf5fe15-77e3-40a7-a0c1-b6ca1bc66ef6" />
 
 
 ### Technologies Used
