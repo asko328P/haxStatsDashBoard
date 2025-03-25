@@ -1,50 +1,31 @@
-# Welcome to your Expo app 👋
+# haxStatsDashBoard
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+A dashboard app made with React Native, meant to monitor current ongoing and past games,
+record specific game events and presenting them in a visually pleasing manner.
 
-## Get started
+[//]: # (## Demo)
 
-1. Install dependencies
 
-   ```bash
-   npm install
-   ```
+### Technologies Used
 
-2. Start the app
+    react-native
+    Expo
+    React Native server components
+    Supabase
+    
 
-   ```bash
-    npx expo start
-   ```
+## How it works:
 
-In the output, you'll find options to open the app in a
+This dashboard works in cohesion with the accompanying Haxball game server. 
+That servers git repo can be found under [this link](https://github.com/asko328P/haxNodeServer)
+The game server is sending specific events to a Supabase project and is storing them in a 
+relational database. Then, this data can be queried by this dashboard and presented,
+giving the user the option to view more specific statistics related to a player
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
+### In detail
 
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
-
-## Get a fresh project
-
-When you're ready, run:
-
-```bash
-npm run reset-project
-```
-
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
-
-## Learn more
-
-To learn more about developing your project with Expo, look at the following resources:
-
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
-
-## Join the community
-
-Join our community of developers creating universal apps.
-
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+The dashboard will initially load the landing page, then server components are taking
+over and fetching data from Supabase. Because the server is the component that is fetching the data,
+we don't need to worry about exposing confidential keys to the public. Client components are then
+taking over and are presenting the data, allowing us to use functionality that are exclusive
+to the client such as React hooks.
