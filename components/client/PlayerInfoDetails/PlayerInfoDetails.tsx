@@ -97,7 +97,11 @@ const PlayerInfoDetails = ({ player, gameLimit }: Props) => {
       <View style={styles.winsHolder}>
         {player.games.map((item, index) => {
           return (
-            <Win key={`${item.id}${gameLimit}${player.name}`} item={item} index={index} />
+            <Win
+              key={`${item.id}${gameLimit}${player.id}`}
+              item={item}
+              index={index}
+            />
           );
         })}
       </View>
