@@ -5,6 +5,21 @@ import "server-only";
 import { supabase } from "@/actions/render-info";
 import GamesFlatList from "@/components/client/GamesFlatList/GamesFlatList";
 
+export type HeatPlayerPosition = {
+  name: "fiaskoza!";
+  team: 1;
+  position: {
+    x: -180;
+    y: 0;
+  };
+};
+export type HeatPlayerList = HeatPlayerPosition[];
+export type HeatmapData = {
+  id: number;
+  heatmap: HeatPlayerList[];
+  map_name: string;
+};
+
 export type Game = {
   id: number;
   created_at: string;
@@ -28,6 +43,7 @@ export type Game = {
     };
     is_own_goal: boolean;
   }[];
+  heatmaps: HeatmapData[];
 };
 
 export default async function GameList() {
@@ -38,7 +54,8 @@ export default async function GameList() {
         *,
         game_player!inner (
             id:player_id, team:team_id, players!player_id(id, created_at)),
-            goals!inner(player_id, is_own_goal, time, id, game_player!inner(team_id))
+            goals!inner(player_id, is_own_goal, time, id, game_player!inner(team_id)),
+            heatmaps!left(*)
         )
     `,
     )

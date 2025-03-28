@@ -11,6 +11,7 @@ import { convertMiliseconds, dateToString } from "@/utility/utilityFunctions";
 import { useMemo } from "react";
 import { useSelectedPlayerStore } from "@/zustand/selectedPlayer/selectedPlayerSlice";
 import { Game } from "@/components/server/GameList/GameList";
+import HeatMap from "@/components/ui/HeatMap/HeatMap";
 
 type Props = {
   games: Game[] | null;
@@ -22,6 +23,7 @@ const BRIGHT_RED_COLOR = "#fbcdc8";
 const DARK_BLUE_COLOR = "#07273a";
 
 const GamesFlatList = ({ games }: Props) => {
+  const selectedPlayerId = useSelectedPlayerStore((state) => state.id);
   const setSelectedPlayerId = useSelectedPlayerStore((state) => state.set);
   const handlePlayerPress = (id: string) => {
     setSelectedPlayerId(id);
@@ -222,6 +224,17 @@ const GamesFlatList = ({ games }: Props) => {
                     </View>
                   );
                 })}
+
+                <View style={{ alignItems: "center" }}>
+                  {item.heatmaps?.map((item) => {
+                    return (
+                      <HeatMap
+                        nameFilter={selectedPlayerId}
+                        heatmapData={item}
+                      />
+                    );
+                  })}
+                </View>
               </View>
 
               <Text style={[{ fontSize: 16, textAlign: "right" }, styles.text]}>

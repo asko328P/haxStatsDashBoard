@@ -14,6 +14,8 @@ import React, { useState } from "react";
 import PlayerInfo from "@/components/server/PlayerInfo/PlayerInfo";
 import { AntDesign, FontAwesome } from "@expo/vector-icons";
 import Animated, { LinearTransition } from "react-native-reanimated";
+import { WithSkiaWeb } from "@shopify/react-native-skia/lib/module/web";
+import HeatMapCanvas from "@/components/Skia/HeatMapCanvas";
 
 const GameLimitTouchable = ({
   id,
