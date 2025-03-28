@@ -50,10 +50,10 @@ const HeatMap = ({
           }
         }
         let posRow = Math.floor(
-          (position.x + stadium.width) / ((stadium.width * 2) / rows),
+          (position.y + stadium.height) / ((stadium.height * 2) / rows),
         );
         let posCol = Math.floor(
-          (position.y + stadium.height) / ((stadium.height * 2) / cols),
+          (position.x + stadium.width) / ((stadium.width * 2) / cols),
         );
         valuesArray[posRow][posCol] += 1;
         if (valuesArray[posRow][posCol] > maxValue) {
