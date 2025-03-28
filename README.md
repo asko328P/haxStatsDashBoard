@@ -8,8 +8,9 @@ record specific game events and presenting them in a visually pleasing manner.
 A version of this dashboard is hosted by Expos services under the following link:
 [https://haxstats.expo.app/](https://haxstats.expo.app/)
 
+![Screenshot 2025-03-28 at 16 24 41](https://github.com/user-attachments/assets/bffc2801-5994-4726-b199-7a15ecdb25f1)
+
     
-<img width="1579" alt="Screenshot 2025-03-25 at 01 01 02" src="https://github.com/user-attachments/assets/adf5fe15-77e3-40a7-a0c1-b6ca1bc66ef6" />
 
 
 ### Technologies Used
