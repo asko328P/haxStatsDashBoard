@@ -8,7 +8,14 @@ import {
 } from "react-native";
 import { HeatmapData } from "@/components/server/GameList/GameList";
 import { implementedMaps } from "@/assets/maps/implementedMaps";
-import Svg, { Circle, FeGaussianBlur, Filter, Rect } from "react-native-svg";
+import Svg, {
+  Circle,
+  Defs,
+  FeGaussianBlur,
+  Filter,
+  G,
+  Rect,
+} from "react-native-svg";
 import { useMemo } from "react";
 import { interpolate } from "react-native-reanimated";
 import { interpolateColor } from "react-native-reanimated/src";
@@ -24,8 +31,8 @@ type Props = {
 const HeatMap = ({
   style,
   heatmapData,
-  rows = 7,
-  cols = 14,
+  rows = 10,
+  cols = 20,
   nameFilter,
 }: Props) => {
   // @ts-ignore
@@ -92,14 +99,14 @@ const HeatMap = ({
               teamColor === 0
                 ? [
                     "rgba(126,255,0,0)",
-                    "rgba(194,253,42,0.3)",
-                    "rgba(255,26,26, 0.8)",
+                    "rgba(194,253,42,0.4)",
+                    "rgba(255,26,26, 1)",
                   ]
                 : teamColor === 1
                   ? [
                       "rgba(249,255,37,0)",
-                      "rgba(253,148,42,0.3)",
-                      "rgba(255,26,26, 0.8)",
+                      "rgba(253,148,42,0.5)",
+                      "rgba(255,57,57,1)",
                     ]
                   : [
                       "rgba(16,255,136,0)",
@@ -130,7 +137,10 @@ const HeatMap = ({
         width={400}
         height={(400 * stadium.height) / stadium.width}
       >
-        {heatmapBlocks}
+        <Filter id="myFilter">
+          <FeGaussianBlur stdDeviation={24} />
+        </Filter>
+        <G filter={"url(#myFilter)"}>{heatmapBlocks}</G>
       </Svg>
     </View>
   );
