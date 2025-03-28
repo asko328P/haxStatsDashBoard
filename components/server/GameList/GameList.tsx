@@ -7,10 +7,10 @@ import GamesFlatList from "@/components/client/GamesFlatList/GamesFlatList";
 
 export type HeatPlayerPosition = {
   name: "fiaskoza!";
-  team: 1;
+  team: number;
   position: {
-    x: -180;
-    y: 0;
+    x: number;
+    y: number;
   };
 };
 export type HeatPlayerList = HeatPlayerPosition[];

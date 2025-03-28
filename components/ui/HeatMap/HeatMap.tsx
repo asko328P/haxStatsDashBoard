@@ -43,11 +43,14 @@ const HeatMap = ({
     let maxValue = 0;
 
     heatmapData.heatmap.forEach((list) => {
-      list.forEach(({ name, position }) => {
+      list.forEach(({ name, position, team }) => {
         if (nameFilter) {
           if (name !== nameFilter) {
             return;
           }
+        }
+        if (team === 0) {
+          return;
         }
         let posRow = Math.floor(
           (position.y + stadium.height) / ((stadium.height * 2) / rows),
