@@ -21,8 +21,6 @@ type Props = {
   nameFilter?: string;
 };
 
-const stadium2v2Image = require("@/assets/maps/2v2.png");
-
 const HeatMap = ({
   style,
   heatmapData,
@@ -34,7 +32,7 @@ const HeatMap = ({
   if (!implementedMaps[heatmapData.map_name]) {
     return;
   }
-  const stadium: { width: number; height: number } =
+  const stadium: { width: number; height: number; image: any } =
     // @ts-ignore
     implementedMaps[heatmapData.map_name];
 
@@ -97,7 +95,7 @@ const HeatMap = ({
           width: 400,
           height: (400 * stadium.height) / stadium.width,
         }}
-        source={stadium2v2Image}
+        source={stadium.image}
       />
       <Svg
         style={{ position: "absolute" }}
