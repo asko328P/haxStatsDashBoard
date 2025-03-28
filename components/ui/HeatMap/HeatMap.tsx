@@ -84,18 +84,9 @@ const HeatMap = ({
             y={(i * 2 * stadium.height) / rows - stadium.height}
             width={(stadium.width / cols) * 2}
             height={(stadium.height / rows) * 2}
-            // fill={interpolateColor(
-            //   value,
-            //   [0, maxValue / 2, maxValue],
-            //   [
-            //     "rgba(126,255,0,0)",
-            //     "rgba(194,253,42,0.3)",
-            //     "rgba(255,26,26, 0.8)",
-            //   ],
-            // )}
             fill={interpolateColor(
               value,
-              [0, maxValue / 2, maxValue],
+              [0, maxValue / 4, maxValue],
               teamColor === 0
                 ? [
                     "rgba(126,255,0,0)",
@@ -105,13 +96,13 @@ const HeatMap = ({
                 : teamColor === 1
                   ? [
                       "rgba(249,255,37,0)",
-                      "rgba(253,148,42,0.7)",
+                      "rgba(253,148,42,0.3)",
                       "rgba(255,57,57,1)",
                     ]
                   : [
                       "rgba(16,255,136,0)",
                       "rgba(94,255,255,0.4)",
-                      "rgba(170,214,255,1)",
+                      "rgba(170,214,255,0.6)",
                     ],
             )}
             // stroke="red"
@@ -140,7 +131,11 @@ const HeatMap = ({
         <Filter id="myFilter">
           <FeGaussianBlur stdDeviation={24} />
         </Filter>
+        <Filter id="myFilter2">
+          <FeGaussianBlur stdDeviation={18} />
+        </Filter>
         <G filter={"url(#myFilter)"}>{heatmapBlocks}</G>
+        <G filter={"url(#myFilter2)"}>{heatmapBlocks}</G>
       </Svg>
     </View>
   );
