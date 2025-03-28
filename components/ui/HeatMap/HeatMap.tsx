@@ -24,8 +24,8 @@ type Props = {
 const HeatMap = ({
   style,
   heatmapData,
-  rows = 10,
-  cols = 20,
+  rows = 7,
+  cols = 14,
   nameFilter,
 }: Props) => {
   // @ts-ignore
@@ -42,12 +42,15 @@ const HeatMap = ({
       .map(() => new Array(cols).fill(0));
     let maxValue = 0;
 
+    let teamColor = 0;
+
     heatmapData.heatmap.forEach((list) => {
       list.forEach(({ name, position, team }) => {
         if (nameFilter) {
           if (name !== nameFilter) {
             return;
           }
+          teamColor = team;
         }
         if (team === 0) {
           return;
@@ -69,19 +72,40 @@ const HeatMap = ({
       return col.map((value, j) => {
         return (
           <Rect
-            key={`${i}-${j}${value}`}
+            key={`${heatmapData.id}${i}${j}`}
             x={(j * 2 * stadium.width) / cols - stadium.width}
             y={(i * 2 * stadium.height) / rows - stadium.height}
             width={(stadium.width / cols) * 2}
             height={(stadium.height / rows) * 2}
+            // fill={interpolateColor(
+            //   value,
+            //   [0, maxValue / 2, maxValue],
+            //   [
+            //     "rgba(126,255,0,0)",
+            //     "rgba(194,253,42,0.3)",
+            //     "rgba(255,26,26, 0.8)",
+            //   ],
+            // )}
             fill={interpolateColor(
               value,
               [0, maxValue / 2, maxValue],
-              [
-                "rgba(126,255,0,0)",
-                "rgba(194,253,42,0.3)",
-                "rgba(255,26,26, 0.8)",
-              ],
+              teamColor === 0
+                ? [
+                    "rgba(126,255,0,0)",
+                    "rgba(194,253,42,0.3)",
+                    "rgba(255,26,26, 0.8)",
+                  ]
+                : teamColor === 1
+                  ? [
+                      "rgba(249,255,37,0)",
+                      "rgba(253,148,42,0.3)",
+                      "rgba(255,26,26, 0.8)",
+                    ]
+                  : [
+                      "rgba(16,255,136,0)",
+                      "rgba(94,255,255,0.3)",
+                      "rgba(170,214,255,0.8)",
+                    ],
             )}
             // stroke="red"
             // strokeWidth="2"
@@ -116,6 +140,7 @@ export default HeatMap;
 
 const styles = StyleSheet.create({
   container: {
-    padding: 10,
+    borderRadius: 10,
+    overflow: "hidden",
   },
 });
