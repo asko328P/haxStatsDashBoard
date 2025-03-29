@@ -1,5 +1,7 @@
 import {
   Image,
+  LayoutChangeEvent,
+  LayoutRectangle,
   StyleProp,
   StyleSheet,
   Text,
@@ -16,7 +18,7 @@ import Svg, {
   G,
   Rect,
 } from "react-native-svg";
-import { useMemo } from "react";
+import { useMemo, useRef, useState } from "react";
 import { interpolate } from "react-native-reanimated";
 import { interpolateColor } from "react-native-reanimated/src";
 
@@ -40,6 +42,15 @@ const HeatMap = ({
   }
   const stadium: { width: number; height: number; image: any } =
     implementedMaps[heatmapData.map_name];
+
+  const shouldSetLayout = useRef<boolean>(true);
+
+  const [layout, setLayout] = useState<LayoutRectangle>();
+
+  const layoutHandler = (layout: LayoutRectangle) => {
+    console.log(layout);
+    setLayout(layout);
+  };
 
   const heatmapBlocks = useMemo(() => {
     let valuesArray: number[][] = new Array(rows)
@@ -109,19 +120,35 @@ const HeatMap = ({
     });
   }, [nameFilter]);
   return (
-    <View style={[styles.container, style]}>
+    <View
+      onLayout={(e) => layoutHandler(e.nativeEvent.layout)}
+      style={[
+        {
+          height: layout?.width
+            ? (layout?.width * stadium.height) / stadium.width
+            : 0,
+        },
+        styles.container,
+        style,
+      ]}
+    >
       <Image
         style={{
-          width: 400,
-          height: (400 * stadium.height) / stadium.width,
+          position: "absolute",
+          width: "100%",
+          height: layout?.width
+            ? (layout?.width * stadium.height) / stadium.width
+            : 0,
         }}
         source={stadium.image}
       />
       <Svg
         style={{ position: "absolute" }}
         viewBox={`-${stadium.width} -${stadium.height} ${stadium.width * 2} ${stadium.height * 2} `}
-        width={400}
-        height={(400 * stadium.height) / stadium.width}
+        width={layout?.width}
+        height={
+          layout?.width ? (layout?.width! * stadium.height) / stadium.width : 0
+        }
       >
         <Filter id="myFilter">
           <FeGaussianBlur stdDeviation={24} />
@@ -140,6 +167,7 @@ export default HeatMap;
 
 const styles = StyleSheet.create({
   container: {
+    minWidth: "100%",
     borderRadius: 10,
     overflow: "hidden",
   },

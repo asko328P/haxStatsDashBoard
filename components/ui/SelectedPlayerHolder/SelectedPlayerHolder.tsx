@@ -12,10 +12,7 @@ import {
 import { useSelectedPlayerStore } from "@/zustand/selectedPlayer/selectedPlayerSlice";
 import React, { useState } from "react";
 import PlayerInfo from "@/components/server/PlayerInfo/PlayerInfo";
-import { AntDesign, FontAwesome } from "@expo/vector-icons";
-import Animated, { LinearTransition } from "react-native-reanimated";
-import { WithSkiaWeb } from "@shopify/react-native-skia/lib/module/web";
-import HeatMapCanvas from "@/components/Skia/HeatMapCanvas";
+import { AntDesign } from "@expo/vector-icons";
 
 const GameLimitTouchable = ({
   id,

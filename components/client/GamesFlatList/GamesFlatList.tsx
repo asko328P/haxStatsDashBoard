@@ -224,17 +224,6 @@ const GamesFlatList = ({ games }: Props) => {
                     </View>
                   );
                 })}
-
-                <View style={{ alignItems: "center" }}>
-                  {item.heatmaps?.map((item) => {
-                    return (
-                      <HeatMap
-                        nameFilter={selectedPlayerId}
-                        heatmapData={item}
-                      />
-                    );
-                  })}
-                </View>
               </View>
 
               <Text style={[{ fontSize: 16, textAlign: "right" }, styles.text]}>
@@ -243,6 +232,17 @@ const GamesFlatList = ({ games }: Props) => {
                   style={[styles.text, { fontSize: 14, color: "#505050" }]}
                 >{`${dateToString(item.created_at)}`}</Text>
               </Text>
+            </View>
+            <View style={styles.heatMapHolder}>
+              {item.heatmaps?.map((item) => {
+                return (
+                  <HeatMap
+                    key={item.id}
+                    nameFilter={selectedPlayerId}
+                    heatmapData={item}
+                  />
+                );
+              })}
             </View>
           </View>
         );
@@ -254,6 +254,9 @@ const GamesFlatList = ({ games }: Props) => {
 export default GamesFlatList;
 
 const styles = StyleSheet.create({
+  heatMapHolder: {
+    alignItems: "center",
+  },
   goalPlayerName: {
     textAlign: "center",
   },
@@ -314,7 +317,7 @@ const styles = StyleSheet.create({
     color: "white",
   },
   renderItem: {
-    gap: 2,
+    gap: 10,
     backgroundColor: "#1e1e1e",
     borderWidth: 1,
     borderRadius: 4,
