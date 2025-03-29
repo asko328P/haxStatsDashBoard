@@ -8,7 +8,9 @@
 //   },
 // ];
 
-export const implementedMaps = {
+export const implementedMaps: {
+  [key: string]: { image: any; name: string; width: number; height: number };
+} = {
   "WFL | MEDIUM": {
     image: require("@/assets/maps/2v2.png"),
     ...require("@/assets/maps/WFL FUTSAL 2V2.json"),

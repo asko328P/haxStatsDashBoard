@@ -35,12 +35,10 @@ const HeatMap = ({
   cols = 20,
   nameFilter,
 }: Props) => {
-  // @ts-ignore
   if (!implementedMaps[heatmapData.map_name]) {
     return;
   }
   const stadium: { width: number; height: number; image: any } =
-    // @ts-ignore
     implementedMaps[heatmapData.map_name];
 
   const heatmapBlocks = useMemo(() => {
@@ -105,9 +103,6 @@ const HeatMap = ({
                       "rgba(170,214,255,0.6)",
                     ],
             )}
-            // stroke="red"
-            // strokeWidth="2"
-            // opacity={interpolate(value, [0, maxValue], [0, 1])}
           />
         );
       });
