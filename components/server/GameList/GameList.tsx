@@ -6,12 +6,13 @@ import { supabase } from "@/actions/render-info";
 import GamesFlatList from "@/components/client/GamesFlatList/GamesFlatList";
 
 export type HeatPlayerPosition = {
-  name: "fiaskoza!";
+  name: string;
   team: number;
   position: {
     x: number;
     y: number;
   };
+  isBall?: boolean;
 };
 export type HeatPlayerList = HeatPlayerPosition[];
 export type HeatmapData = {

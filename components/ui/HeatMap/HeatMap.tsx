@@ -86,7 +86,7 @@ const HeatMap = ({
             height={(stadium.height / rows) * 2}
             fill={interpolateColor(
               value,
-              [0, maxValue / 4, maxValue],
+              [0, maxValue / 3, maxValue],
               teamColor === 0
                 ? [
                     "rgba(126,255,0,0)",
@@ -96,7 +96,7 @@ const HeatMap = ({
                 : teamColor === 1
                   ? [
                       "rgba(249,255,37,0)",
-                      "rgba(253,148,42,0.3)",
+                      "rgba(253,148,42,0.4)",
                       "rgba(255,57,57,1)",
                     ]
                   : [
