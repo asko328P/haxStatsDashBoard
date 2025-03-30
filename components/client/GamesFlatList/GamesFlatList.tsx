@@ -12,6 +12,7 @@ import { useMemo } from "react";
 import { useSelectedPlayerStore } from "@/zustand/selectedPlayer/selectedPlayerSlice";
 import { Game } from "@/components/server/GameList/GameList";
 import HeatMap from "@/components/ui/HeatMap/HeatMap";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
 
 type Props = {
   games: Game[] | null;
@@ -189,6 +190,7 @@ const GamesFlatList = ({ games }: Props) => {
                         <Text
                           style={[
                             styles.text,
+                            { fontSize: 16 },
                             goal.game_player.team_id === 1 && {
                               color: RED_COLOR,
                             },
@@ -201,6 +203,19 @@ const GamesFlatList = ({ games }: Props) => {
                         >
                           {`${goal.player_id}${goal.is_own_goal ? " (OG)" : ""}`}
                         </Text>
+                        {goal.assist_player_id && (
+                          <Text
+                            style={[
+                              {
+                                fontSize: 13,
+                                opacity: 1,
+                                color: "#7a7a7a",
+                              },
+                            ]}
+                          >
+                            {`+ ${goal.assist_player_id}`}
+                          </Text>
+                        )}
                         {goal.time && (
                           <Text
                             style={{
@@ -280,7 +295,7 @@ const styles = StyleSheet.create({
     paddingVertical: 4,
     paddingHorizontal: 5,
     borderRadius: 5,
-    maxWidth: 200,
+    maxWidth: 300,
     // minWidth: 150,
     backgroundColor: "#2c2c2c",
     width: "100%",

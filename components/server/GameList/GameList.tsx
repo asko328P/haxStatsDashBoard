@@ -43,6 +43,7 @@ export type Game = {
       team_id: number;
     };
     is_own_goal: boolean;
+    assist_player_id?: string;
   }[];
   heatmaps: HeatmapData[];
 };
@@ -55,7 +56,7 @@ export default async function GameList() {
         *,
         game_player!inner (
             id:player_id, team:team_id, players!player_id(id, created_at)),
-            goals!inner(player_id, is_own_goal, time, id, game_player!inner(team_id)),
+            goals!inner(player_id, assist_player_id, is_own_goal, time, id, game_player!inner(team_id)),
             heatmaps!left(*)
         )
     `,
@@ -73,6 +74,7 @@ export default async function GameList() {
     .order("id", {
       ascending: false,
     })
+    .order("id", { referencedTable: "goals", ascending: false })
     .overrideTypes<Array<Game>>();
 
   console.log("data: ", data);
