@@ -75,6 +75,7 @@ export default async function GameList() {
       ascending: false,
     })
     .order("id", { referencedTable: "goals", ascending: false })
+    .limit(25)
     .overrideTypes<Array<Game>>();
 
   console.log("data: ", data);

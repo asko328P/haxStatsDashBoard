@@ -48,7 +48,6 @@ const HeatMap = ({
   const [layout, setLayout] = useState<LayoutRectangle>();
 
   const layoutHandler = (layout: LayoutRectangle) => {
-    console.log(layout);
     setLayout(layout);
   };
 

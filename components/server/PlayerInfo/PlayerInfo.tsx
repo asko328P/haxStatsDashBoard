@@ -23,6 +23,13 @@ export type PlayerInfo = {
       is_own_goal: false;
       goal_for_team_id: null;
     }[];
+    assists: {
+      id: number;
+      time: null;
+      created_at: string;
+      is_own_goal: false;
+      goal_for_team_id: null;
+    }[];
     game_player: [
       {
         team_id: number;
@@ -42,17 +49,23 @@ export default async function PlayerInfo({
     .from("players")
     .select(
       `*,
-      games!inner(*, goals!left(*), game_player!inner(*))
+      games!inner(*, goals!left(*), assists:goals!left(*), game_player!inner(*))   
     `,
     )
     .eq("id", playerId)
-    .or(`player_id.eq.${playerId?.toString()}`, {
-      referencedTable: "games.goals",
-    })
+    // .or(`player_id.eq.${playerId?.toString()}`, {
+    //   referencedTable: "games.goals",
+    // })
     .or(`player_id.eq.${playerId?.toString()}`, {
       referencedTable: "games.game_player",
     })
-    // .order("id", { referencedTable: "games", ascending: false })
+    .eq("games.assists.assist_player_id", playerId?.toString())
+    .eq("games.goals.player_id", playerId?.toString())
+
+    // .or(`assist_player_id.eq.${playerId?.toString()}`, {
+    //   referencedTable: "games.assists",
+    // })
+    // .filter("games.assists.assist_player_id", "eq", playerId?.toString())
     .limit(gameLimit < HARD_LIMIT ? gameLimit : HARD_LIMIT, {
       referencedTable: "games",
     })

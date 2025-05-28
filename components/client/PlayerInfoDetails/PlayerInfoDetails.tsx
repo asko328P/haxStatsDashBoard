@@ -73,6 +73,7 @@ const PlayerInfoDetails = ({ player, gameLimit }: Props) => {
   let winRate = 0;
   let wonGames = 0;
   let totalGames = 0;
+  let scoredAssists = 0;
 
   //scored goals
   player.games.forEach((game) => {
@@ -90,6 +91,7 @@ const PlayerInfoDetails = ({ player, gameLimit }: Props) => {
         scoredGoals += 1;
       }
     });
+    scoredAssists += game.assists.length;
   });
   return (
     <Animated.View entering={FadeIn} style={styles.container}>
@@ -107,6 +109,7 @@ const PlayerInfoDetails = ({ player, gameLimit }: Props) => {
       </View>
       <View style={styles.allStatsHolder}>
         <StatHolder label={"Goals scored:"} value={scoredGoals} />
+        <StatHolder label={"Assists:"} value={scoredAssists} />
         <StatHolder label={"Own goals scored:"} value={scoredOwnGoals} />
         <StatHolder
           label={"Win rate:"}
