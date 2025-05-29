@@ -8,7 +8,7 @@ import {
   View,
   ViewStyle,
 } from "react-native";
-import { HeatmapData } from "@/components/server/GameList/GameList";
+import { Goal, HeatmapData } from "@/components/server/GameList/GameList";
 import { implementedMaps } from "@/assets/maps/implementedMaps";
 import Svg, {
   Circle,
@@ -16,10 +16,12 @@ import Svg, {
   FeGaussianBlur,
   Filter,
   G,
+  Line,
+  Path,
   Rect,
 } from "react-native-svg";
 import { useMemo, useRef, useState } from "react";
-import { interpolate } from "react-native-reanimated";
+import Animated, { interpolate } from "react-native-reanimated";
 import { interpolateColor } from "react-native-reanimated/src";
 
 type Props = {
@@ -28,7 +30,10 @@ type Props = {
   rows?: number;
   cols?: number;
   nameFilter?: string;
+  goals?: Goal[];
 };
+
+const AnimatedCircle = Animated.createAnimatedComponent(Circle);
 
 const HeatMap = ({
   style,
@@ -36,6 +41,7 @@ const HeatMap = ({
   rows = 10,
   cols = 20,
   nameFilter,
+  goals,
 }: Props) => {
   if (!implementedMaps[heatmapData.map_name]) {
     return;
@@ -50,6 +56,52 @@ const HeatMap = ({
   const layoutHandler = (layout: LayoutRectangle) => {
     setLayout(layout);
   };
+
+  const goalDots = useMemo(() => {
+    const goalData = goals?.map((goal) => {
+      return goal.heatmap?.flatMap((list) => {
+        return list.filter(({ name, position, team, isBall }) => {
+          return isBall;
+        });
+      });
+    });
+
+    console.log("goaldata:", goalData);
+    return goalData?.flatMap((dots) => {
+      return dots?.map((item, index, array) => {
+        if (index === 0) {
+          return;
+        }
+
+        const distance = Math.sqrt(
+          Math.pow(item.position.x - array[index - 1].position.x, 2) +
+            Math.pow(item.position.y - array[index - 1].position.y, 2),
+        );
+
+        return (
+          <Line
+            x1={item.position.x}
+            y1={item.position.y}
+            x2={array[index - 1].position.x}
+            y2={array[index - 1].position.y}
+            stroke={interpolateColor(
+              distance,
+              [0, 25],
+              ["rgb(4,255,23)", "rgb(255,26,60)"],
+            )}
+            strokeWidth="2"
+          />
+        );
+        // return (
+        //   <Path
+        //     d={`M${item.position.x}${item.position.y} ${array[index - 1].position.x}${array[index - 1].position.y}`}
+        //     stroke={"red"}
+        //     strokeWidth={1}
+        //   />
+        // );
+      });
+    });
+  }, []);
 
   const heatmapBlocks = useMemo(() => {
     let valuesArray: number[][] = new Array(rows)
@@ -157,6 +209,7 @@ const HeatMap = ({
         </Filter>
         <G filter={"url(#myFilter)"}>{heatmapBlocks}</G>
         <G filter={"url(#myFilter2)"}>{heatmapBlocks}</G>
+        <G>{goalDots}</G>
       </Svg>
     </View>
   );

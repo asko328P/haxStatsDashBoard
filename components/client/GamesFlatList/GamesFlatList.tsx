@@ -249,12 +249,13 @@ const GamesFlatList = ({ games }: Props) => {
               </Text>
             </View>
             <View style={styles.heatMapHolder}>
-              {item.heatmaps?.map((item) => {
+              {item.heatmaps?.map((heatMapData) => {
                 return (
                   <HeatMap
                     key={item.id}
                     nameFilter={selectedPlayerId}
-                    heatmapData={item}
+                    heatmapData={heatMapData}
+                    goals={item.goals}
                   />
                 );
               })}

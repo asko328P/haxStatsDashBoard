@@ -27,6 +27,7 @@ const Win = ({
   index: number;
 }) => {
   const matchWon = item.winning_team_id === item.game_player[0].team_id;
+  const isSpec = item.game_player[0].team_id === 0;
   const winDate = new Date(item.created_at);
   const winDateDay = winDate.getDate().toString().padStart(2, "0");
   const winDateMonth = (winDate.getMonth() + 1).toString().padStart(2, "0");
@@ -42,15 +43,17 @@ const Win = ({
           matchWon
             ? { backgroundColor: "#90d885" }
             : { backgroundColor: "#ba7568" },
+          isSpec && { backgroundColor: "#575151" },
         ]}
       >
         <Text
           style={[
             styles.winText,
             matchWon ? { color: "#308500" } : { color: "#612828" },
+            isSpec && { color: "#3a3a3a" },
           ]}
         >
-          {matchWon ? "W" : "L"}
+          {isSpec ? "S" : matchWon ? "W" : "L"}
         </Text>
       </View>
       <Text style={styles.winDate}>
