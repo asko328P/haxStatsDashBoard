@@ -28,7 +28,6 @@ export type Goal = {
   game_player: {
     team_id: number;
   };
-  heatmap?: HeatPlayerList[];
   is_own_goal: boolean;
   assist_player_id?: string;
 };
@@ -36,7 +35,7 @@ export type Game = {
   id: number;
   created_at: string;
   ended_at: string;
-  time?: number;
+  time: number;
   winning_team_id: number;
   game_player: {
     id: string;
@@ -58,7 +57,7 @@ export default async function GameList() {
         *,
         game_player!inner (
             id:player_id, team:team_id, players!player_id(id, created_at)),
-            goals!inner(player_id, assist_player_id, is_own_goal, time, id, game_player!inner(team_id), heatmap),
+            goals!inner(player_id, assist_player_id, is_own_goal, time, id, game_player!inner(team_id)),
             heatmaps!left(*)
         )
     `,

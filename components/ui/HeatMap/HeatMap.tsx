@@ -24,34 +24,40 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import Animated, {
   Easing,
   interpolate,
+  SharedValue,
+  useAnimatedProps,
+  useDerivedValue,
   useSharedValue,
   withRepeat,
   withTiming,
 } from "react-native-reanimated";
 import { interpolateColor } from "react-native-reanimated/src";
 import AnimatedBall from "@/components/ui/HeatMap/AnimatedBall";
+import MapIcon from "@/components/ui/HeatMap/MapIcon/MapIcon";
+import gameItem from "@/components/ui/GameItem/GameItem";
 
 type Props = {
   style?: ViewStyle;
   heatmapData: HeatmapData;
+  gameItem: Game;
   rows?: number;
   cols?: number;
   nameFilter?: string;
-  goals?: Goal[];
+  sharedProgressValue: SharedValue<number>;
 };
 
 const AnimatedCircle = Animated.createAnimatedComponent(Circle);
+const AnimatedGroup = Animated.createAnimatedComponent(G);
 
 const HeatMap = ({
+  gameItem,
   style,
   heatmapData,
   rows = 10,
   cols = 20,
   nameFilter,
-  goals,
+  sharedProgressValue,
 }: Props) => {
-  const sharedAnimationProgress = useSharedValue(0);
-
   if (!implementedMaps[heatmapData.map_name]) {
     return;
   }
@@ -65,59 +71,6 @@ const HeatMap = ({
   const layoutHandler = (layout: LayoutRectangle) => {
     setLayout(layout);
   };
-
-  const goalData = useMemo(() => {
-    return goals
-      ?.map((goal) => {
-        return goal.heatmap?.flatMap((list) => {
-          return list.filter(({ name, position, team, isBall }) => {
-            return isBall;
-          });
-        });
-      })
-      .filter((goal) => {
-        return goal;
-      });
-  }, []);
-
-  // console.log(goalData);
-
-  const goalDots = useMemo(() => {
-    return goalData?.flatMap((dots) => {
-      return dots?.map((item, index, array) => {
-        if (index === 0) {
-          return;
-        }
-
-        const distance = Math.sqrt(
-          Math.pow(item.position.x - array[index - 1].position.x, 2) +
-            Math.pow(item.position.y - array[index - 1].position.y, 2),
-        );
-
-        return (
-          <Line
-            x1={item.position.x}
-            y1={item.position.y}
-            x2={array[index - 1].position.x}
-            y2={array[index - 1].position.y}
-            stroke={interpolateColor(
-              distance,
-              [0, 25],
-              ["rgb(4,255,23)", "rgb(255,26,60)"],
-            )}
-            strokeWidth="2"
-          />
-        );
-        // return (
-        //   <Path
-        //     d={`M${item.position.x}${item.position.y} ${array[index - 1].position.x}${array[index - 1].position.y}`}
-        //     stroke={"red"}
-        //     strokeWidth={1}
-        //   />
-        // );
-      });
-    });
-  }, []);
 
   const heatmapBlocks = useMemo(() => {
     let valuesArray: number[][] = new Array(rows)
@@ -187,12 +140,16 @@ const HeatMap = ({
     });
   }, [nameFilter]);
 
-  useEffect(() => {
-    sharedAnimationProgress.value = withRepeat(
-      withTiming(1, { duration: 3000, easing: Easing.linear }),
-      -1,
-    );
-  }, []);
+  const positionsInCurrentMoment = useDerivedValue(() => {
+    return heatmapData.heatmap[Math.floor(sharedProgressValue.value)];
+  });
+
+  // const animatedPositionProps = useAnimatedProps(() => {
+  //   return {
+  //     children: <Text children={"asd"} />,
+  //   };
+  // });
+
   return (
     <View
       onLayout={(e) => layoutHandler(e.nativeEvent.layout)}
@@ -232,20 +189,38 @@ const HeatMap = ({
         </Filter>
         <G filter={"url(#myFilter)"}>{heatmapBlocks}</G>
         <G filter={"url(#myFilter2)"}>{heatmapBlocks}</G>
-        {/*<G>{goalDots}</G>*/}
+        {/*<G key={sharedProgressValue.value}>{positionsInCurrentMoment.value}</G>*/}
         <G>
-          {goalData?.map((item) => {
-            if (!item) {
-              return;
-            }
+          {gameItem.game_player.map((item) => {
             return (
-              <AnimatedBall
-                positionArray={item}
-                sharedAnimationProgress={sharedAnimationProgress}
+              <MapIcon
+                name={item.id}
+                heatmapData={heatmapData}
+                sharedProgressValue={sharedProgressValue}
               />
             );
           })}
+          <MapIcon
+            name={"ball"}
+            heatmapData={heatmapData}
+            sharedProgressValue={sharedProgressValue}
+          />
         </G>
+        {/*<AnimatedGroup animatedProps={animatedPositionProps} />*/}
+        {/*<G>{goalDots}</G>*/}
+        {/*<G>*/}
+        {/*  {goalData?.map((item) => {*/}
+        {/*    if (!item) {*/}
+        {/*      return;*/}
+        {/*    }*/}
+        {/*    return (*/}
+        {/*      <AnimatedBall*/}
+        {/*        positionArray={item}*/}
+        {/*        sharedAnimationProgress={sharedAnimationProgress}*/}
+        {/*      />*/}
+        {/*    );*/}
+        {/*  })}*/}
+        {/*</G>*/}
 
         {/*<AnimatedCircle*/}
         {/*  x={0}*/}
