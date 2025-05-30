@@ -3,7 +3,7 @@ import {
   HeatmapData,
   HeatPlayerPosition,
 } from "@/components/server/GameList/GameList";
-import { Circle } from "react-native-svg";
+import { Circle, G, Text } from "react-native-svg";
 import Animated, {
   SharedValue,
   useAnimatedProps,
@@ -17,6 +17,7 @@ type Props = {
 };
 
 const AnimatedCircle = Animated.createAnimatedComponent(Circle);
+const AnimatedText = Animated.createAnimatedComponent(Text);
 
 const MapIcon = ({ name, heatmapData, sharedProgressValue }: Props) => {
   const positionInCurrentMoment = useDerivedValue(() => {
@@ -31,7 +32,7 @@ const MapIcon = ({ name, heatmapData, sharedProgressValue }: Props) => {
     return;
   }
 
-  const animatedProps = useAnimatedProps(() => {
+  const animatedCircleProps = useAnimatedProps(() => {
     return {
       cx: positionInCurrentMoment.value.position.x,
       cy: positionInCurrentMoment.value.position.y,
@@ -45,12 +46,30 @@ const MapIcon = ({ name, heatmapData, sharedProgressValue }: Props) => {
     };
   });
 
+  const animatedTextProps = useAnimatedProps(() => {
+    return {
+      x: positionInCurrentMoment.value.position.x,
+      y: positionInCurrentMoment.value.position.y + 30,
+    };
+  });
+
   return (
-    <AnimatedCircle
-      animatedProps={animatedProps}
-      strokeWidth={1.4}
-      stroke={"black"}
-    />
+    <G>
+      <AnimatedCircle
+        animatedProps={animatedCircleProps}
+        strokeWidth={1.4}
+        stroke={"black"}
+      />
+      {name !== "ball" && (
+        <AnimatedText
+          fontFamily={"Verdana"}
+          fill={"white"}
+          animatedProps={animatedTextProps}
+          children={name}
+          textAnchor={"middle"}
+        />
+      )}
+    </G>
   );
 };
 
