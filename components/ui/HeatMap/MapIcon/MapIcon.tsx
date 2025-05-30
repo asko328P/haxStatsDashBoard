@@ -35,6 +35,9 @@ const MapIcon = ({ name, heatmapData, sharedProgressValue }: Props) => {
   });
 
   const positionInCurrentMoment = useDerivedValue(() => {
+    if (!heatmapData.heatmap[currentTick.value]) {
+      return positionInPreviousMoment.value;
+    }
     return heatmapData.heatmap[currentTick.value]?.filter((item) => {
       return item.name === name;
     })[0];
