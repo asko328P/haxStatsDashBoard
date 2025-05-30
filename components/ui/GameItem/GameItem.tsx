@@ -17,7 +17,7 @@ const BRIGHT_RED_COLOR = "#fbcdc8";
 const DARK_BLUE_COLOR = "#07273a";
 
 const GameItem = ({ gameItem }: { gameItem: Game }) => {
-  const sharedProgressValue = useSharedValue(0);
+  const sharedProgressValue = useSharedValue(1);
 
   useEffect(() => {
     sharedProgressValue.value = withRepeat(
