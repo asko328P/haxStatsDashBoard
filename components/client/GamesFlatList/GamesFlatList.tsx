@@ -8,11 +8,16 @@ import {
   View,
 } from "react-native";
 import { convertMiliseconds, dateToString } from "@/utility/utilityFunctions";
-import { useMemo } from "react";
+import { useEffect, useMemo } from "react";
 import { useSelectedPlayerStore } from "@/zustand/selectedPlayer/selectedPlayerSlice";
 import { Game } from "@/components/server/GameList/GameList";
 import HeatMap from "@/components/ui/HeatMap/HeatMap";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
+import {
+  useSharedValue,
+  withRepeat,
+  withTiming,
+} from "react-native-reanimated";
 
 type Props = {
   games: Game[] | null;
@@ -37,6 +42,12 @@ const GamesFlatList = ({ games }: Props) => {
       contentContainerStyle={styles.contentContainer}
       data={games}
       renderItem={({ item }) => {
+        // const sharedProgressValue = useSharedValue(0);
+
+        // useEffect(() => {
+        //   withRepeat(withTiming(item.heatmaps[0].heatmap.length - 1), -1);
+        // }, []);
+
         let redScore = 0;
         let blueScore = 0;
         item.goals.forEach((goal) => {
@@ -255,7 +266,6 @@ const GamesFlatList = ({ games }: Props) => {
                     key={item.id}
                     nameFilter={selectedPlayerId}
                     heatmapData={heatMapData}
-                    goals={item.goals}
                   />
                 );
               })}

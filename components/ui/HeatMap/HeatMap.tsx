@@ -8,7 +8,7 @@ import {
   View,
   ViewStyle,
 } from "react-native";
-import { Goal, HeatmapData } from "@/components/server/GameList/GameList";
+import { Game, Goal, HeatmapData } from "@/components/server/GameList/GameList";
 import { implementedMaps } from "@/assets/maps/implementedMaps";
 import Svg, {
   Circle,
@@ -20,9 +20,16 @@ import Svg, {
   Path,
   Rect,
 } from "react-native-svg";
-import { useMemo, useRef, useState } from "react";
-import Animated, { interpolate } from "react-native-reanimated";
+import { useEffect, useMemo, useRef, useState } from "react";
+import Animated, {
+  Easing,
+  interpolate,
+  useSharedValue,
+  withRepeat,
+  withTiming,
+} from "react-native-reanimated";
 import { interpolateColor } from "react-native-reanimated/src";
+import AnimatedBall from "@/components/ui/HeatMap/AnimatedBall";
 
 type Props = {
   style?: ViewStyle;
@@ -43,6 +50,8 @@ const HeatMap = ({
   nameFilter,
   goals,
 }: Props) => {
+  const sharedAnimationProgress = useSharedValue(0);
+
   if (!implementedMaps[heatmapData.map_name]) {
     return;
   }
@@ -57,16 +66,23 @@ const HeatMap = ({
     setLayout(layout);
   };
 
-  const goalDots = useMemo(() => {
-    const goalData = goals?.map((goal) => {
-      return goal.heatmap?.flatMap((list) => {
-        return list.filter(({ name, position, team, isBall }) => {
-          return isBall;
+  const goalData = useMemo(() => {
+    return goals
+      ?.map((goal) => {
+        return goal.heatmap?.flatMap((list) => {
+          return list.filter(({ name, position, team, isBall }) => {
+            return isBall;
+          });
         });
+      })
+      .filter((goal) => {
+        return goal;
       });
-    });
+  }, []);
 
-    console.log("goaldata:", goalData);
+  // console.log(goalData);
+
+  const goalDots = useMemo(() => {
     return goalData?.flatMap((dots) => {
       return dots?.map((item, index, array) => {
         if (index === 0) {
@@ -170,6 +186,13 @@ const HeatMap = ({
       });
     });
   }, [nameFilter]);
+
+  useEffect(() => {
+    sharedAnimationProgress.value = withRepeat(
+      withTiming(1, { duration: 3000, easing: Easing.linear }),
+      -1,
+    );
+  }, []);
   return (
     <View
       onLayout={(e) => layoutHandler(e.nativeEvent.layout)}
@@ -209,7 +232,29 @@ const HeatMap = ({
         </Filter>
         <G filter={"url(#myFilter)"}>{heatmapBlocks}</G>
         <G filter={"url(#myFilter2)"}>{heatmapBlocks}</G>
-        <G>{goalDots}</G>
+        {/*<G>{goalDots}</G>*/}
+        <G>
+          {goalData?.map((item) => {
+            if (!item) {
+              return;
+            }
+            return (
+              <AnimatedBall
+                positionArray={item}
+                sharedAnimationProgress={sharedAnimationProgress}
+              />
+            );
+          })}
+        </G>
+
+        {/*<AnimatedCircle*/}
+        {/*  x={0}*/}
+        {/*  y={0}*/}
+        {/*  r={6}*/}
+        {/*  fill={"white"}*/}
+        {/*  strokeWidth={1.5}*/}
+        {/*  stroke={"black"}*/}
+        {/*/>*/}
       </Svg>
     </View>
   );
