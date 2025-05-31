@@ -194,6 +194,7 @@ const HeatMap = ({
           {gameItem.game_player.map((item) => {
             return (
               <MapIcon
+                key={item.id}
                 name={item.id}
                 heatmapData={heatmapData}
                 sharedProgressValue={sharedProgressValue}
