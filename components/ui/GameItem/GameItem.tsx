@@ -284,6 +284,8 @@ const GameItem = ({ gameItem }: { gameItem: Game }) => {
         })}
       </View>
       <ProgressBar
+        startGameAnimation={startGameAnimation}
+        cancelGameAnimation={cancelGameAnimation}
         sharedProgressValue={sharedProgressValue}
         maxValue={gameItem.heatmaps[0].heatmap.length - 1}
       />

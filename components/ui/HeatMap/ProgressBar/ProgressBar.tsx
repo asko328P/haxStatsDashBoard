@@ -1,27 +1,65 @@
-import { StyleSheet, View } from "react-native";
+import {
+  GestureResponderEvent,
+  LayoutRectangle,
+  StyleSheet,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import Animated, {
   interpolate,
   SharedValue,
   useAnimatedStyle,
 } from "react-native-reanimated";
+import { useState } from "react";
 
 type Props = {
+  startGameAnimation: () => void;
+  cancelGameAnimation: () => void;
   sharedProgressValue: SharedValue<number>;
   maxValue: number;
 };
 
-const ProgressBar = ({ sharedProgressValue, maxValue }: Props) => {
+const ProgressBar = ({
+  startGameAnimation,
+  cancelGameAnimation,
+  sharedProgressValue,
+  maxValue,
+}: Props) => {
   const animatedStyle = useAnimatedStyle(() => {
     return {
       width: `${interpolate(sharedProgressValue.value, [0, maxValue], [0, 100])}%`,
     };
   });
+
+  const [layout, setLayout] = useState<LayoutRectangle>();
+
+  const pressHandler = (e: any) => {
+    const seekingValue = interpolate(
+      e.nativeEvent.layerX,
+      [0, layout?.width!],
+      [0, maxValue],
+    );
+    cancelGameAnimation();
+    sharedProgressValue.value = seekingValue;
+    startGameAnimation();
+  };
+
+  const layoutHandler = (layout: LayoutRectangle) => {
+    setLayout(layout);
+  };
+
   return (
-    <View style={styles.container}>
-      <Animated.View style={[animatedStyle, styles.progressBar]}>
-        <View style={styles.circle} />
-      </Animated.View>
-    </View>
+    <TouchableOpacity
+      onLayout={(e) => layoutHandler(e.nativeEvent.layout)}
+      onPress={(e) => pressHandler(e)}
+      style={{ paddingVertical: 5 }}
+    >
+      <View style={styles.container}>
+        <Animated.View style={[animatedStyle, styles.progressBar]}>
+          <View style={styles.circle} />
+        </Animated.View>
+      </View>
+    </TouchableOpacity>
   );
 };
 
