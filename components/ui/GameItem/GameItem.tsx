@@ -4,7 +4,10 @@ import HeatMap from "@/components/ui/HeatMap/HeatMap";
 import { Game } from "@/components/server/GameList/GameList";
 import { useSelectedPlayerStore } from "@/zustand/selectedPlayer/selectedPlayerSlice";
 import {
+  cancelAnimation,
   Easing,
+  Extrapolation,
+  interpolate,
   useSharedValue,
   withRepeat,
   withTiming,
@@ -19,14 +22,25 @@ const DARK_BLUE_COLOR = "#07273a";
 const GameItem = ({ gameItem }: { gameItem: Game }) => {
   const sharedProgressValue = useSharedValue(1);
 
-  useEffect(() => {
+  const tickDuration =
+    (gameItem.time * 1000) / gameItem.heatmaps[0].heatmap.length;
+
+  const startGameAnimation = () => {
     sharedProgressValue.value = withRepeat(
       withTiming(gameItem.heatmaps[0].heatmap.length - 1, {
-        duration: gameItem.time * 1000,
+        duration:
+          gameItem.time * 1000 - sharedProgressValue.value * tickDuration,
         easing: Easing.linear,
       }),
       -1,
     );
+  };
+  const cancelGameAnimation = () => {
+    cancelAnimation(sharedProgressValue);
+  };
+
+  useEffect(() => {
+    startGameAnimation();
   }, []);
 
   const selectedPlayerId = useSelectedPlayerStore((state) => state.id);
@@ -167,7 +181,18 @@ const GameItem = ({ gameItem }: { gameItem: Game }) => {
               (goal.game_player.team_id === 2 && !goal.is_own_goal) ||
               (goal.game_player.team_id === 1 && goal.is_own_goal);
             return (
-              <View
+              <TouchableOpacity
+                onPress={() => {
+                  const interpolatedValue = interpolate(
+                    goal.time - 5,
+                    [0, gameItem.time],
+                    [0, gameItem.heatmaps[0].heatmap.length - 1],
+                    Extrapolation.CLAMP,
+                  );
+                  cancelGameAnimation();
+                  sharedProgressValue.value = interpolatedValue;
+                  startGameAnimation();
+                }}
                 key={goal.id}
                 style={[
                   styles.goal,
@@ -228,7 +253,7 @@ const GameItem = ({ gameItem }: { gameItem: Game }) => {
                     </Text>
                   )}
                 </View>
-              </View>
+              </TouchableOpacity>
             );
           })}
         </View>

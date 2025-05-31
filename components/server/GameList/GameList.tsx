@@ -23,7 +23,7 @@ export type HeatmapData = {
 
 export type Goal = {
   id: number;
-  time?: number;
+  time: number;
   player_id: string;
   game_player: {
     team_id: number;
