@@ -13,6 +13,7 @@ import {
   withTiming,
 } from "react-native-reanimated";
 import { useEffect } from "react";
+import ProgressBar from "@/components/ui/HeatMap/ProgressBar/ProgressBar";
 
 const RED_COLOR = "#ff2525";
 const BLUE_COLOR = "#2196df";
@@ -20,6 +21,9 @@ const BRIGHT_RED_COLOR = "#fbcdc8";
 const DARK_BLUE_COLOR = "#07273a";
 
 const GameItem = ({ gameItem }: { gameItem: Game }) => {
+  if (gameItem.heatmaps.length === 0) {
+    return;
+  }
   const sharedProgressValue = useSharedValue(1);
 
   const tickDuration =
@@ -265,6 +269,7 @@ const GameItem = ({ gameItem }: { gameItem: Game }) => {
           >{`${dateToString(gameItem.created_at)}`}</Text>
         </Text>
       </View>
+
       <View style={styles.heatMapHolder}>
         {gameItem.heatmaps?.map((heatMapData) => {
           return (
@@ -278,6 +283,10 @@ const GameItem = ({ gameItem }: { gameItem: Game }) => {
           );
         })}
       </View>
+      <ProgressBar
+        sharedProgressValue={sharedProgressValue}
+        maxValue={gameItem.heatmaps[0].heatmap.length - 1}
+      />
     </View>
   );
 };
