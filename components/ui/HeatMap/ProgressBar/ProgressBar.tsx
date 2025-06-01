@@ -13,9 +13,13 @@ import Animated, {
   useAnimatedStyle,
 } from "react-native-reanimated";
 import { useState } from "react";
-import { FontAwesome6 } from "@expo/vector-icons";
+import { FontAwesome6, Ionicons } from "@expo/vector-icons";
+import { Game, Goal } from "@/components/server/GameList/GameList";
+import gameItem from "@/components/ui/GameItem/GameItem";
 
 type Props = {
+  gameItem: Game;
+  goals: Goal[];
   startGameAnimation: () => void;
   cancelGameAnimation: () => void;
   sharedProgressValue: SharedValue<number>;
@@ -27,6 +31,8 @@ type Props = {
 const CIRCLE_SIZE = 9;
 
 const ProgressBar = ({
+  gameItem,
+  goals,
   startGameAnimation,
   cancelGameAnimation,
   sharedProgressValue,
@@ -84,6 +90,31 @@ const ProgressBar = ({
         onPress={(e) => pressHandler(e)}
         style={{ paddingVertical: 5, flex: 1 }}
       >
+        <View style={{ flexDirection: "row" }}>
+          <Ionicons
+            style={{
+              opacity: 0,
+            }}
+            name="football-outline"
+            size={20}
+            color={"#4c4c4c"}
+          />
+          {goals.map((goal, index) => (
+            <Ionicons
+              style={[
+                { position: "absolute" },
+                {
+                  left: `${interpolate(goal.time, [0, gameItem.time], [0, 100])}%`,
+                  transform: [{ translateX: -10 }],
+                },
+              ]}
+              name="football-outline"
+              size={20}
+              color={"#4c4c4c"}
+            />
+          ))}
+        </View>
+
         <View style={styles.progressContainer}>
           <Animated.View style={[animatedStyle, styles.progressBar]}>
             <View style={styles.circle} />

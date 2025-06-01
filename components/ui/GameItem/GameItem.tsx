@@ -301,6 +301,8 @@ const GameItem = ({ gameItem }: { gameItem: Game }) => {
         })}
       </View>
       <ProgressBar
+        gameItem={gameItem}
+        goals={gameItem.goals}
         shouldShowPlayButton={shouldShowPlayButton}
         handlePlayPress={handlePlayPress}
         startGameAnimation={startGameAnimation}
