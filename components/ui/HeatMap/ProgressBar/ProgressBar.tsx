@@ -6,6 +6,8 @@ import {
 } from "react-native";
 import Animated, {
   Extrapolation,
+  FadeInUp,
+  FadeOutDown,
   interpolate,
   SharedValue,
   useAnimatedStyle,
@@ -22,6 +24,8 @@ type Props = {
   handlePlayPress: () => void;
 };
 
+const CIRCLE_SIZE = 9;
+
 const ProgressBar = ({
   startGameAnimation,
   cancelGameAnimation,
@@ -36,6 +40,9 @@ const ProgressBar = ({
   };
 
   const pressHandler = (e: any) => {
+    if (e.nativeEvent.offsetX < CIRCLE_SIZE) {
+      return;
+    }
     const seekingValue = interpolate(
       e.nativeEvent.offsetX,
       [0, layout?.width!],
@@ -59,11 +66,17 @@ const ProgressBar = ({
           onPress={handlePlayPress}
           style={styles.playPauseButton}
         >
-          <FontAwesome6
-            name={shouldShowPlayButton ? "play" : "pause"}
-            size={16}
-            color={"#dfdfdf"}
-          />
+          <Animated.View
+            key={`${shouldShowPlayButton}`}
+            entering={FadeInUp}
+            exiting={FadeOutDown}
+          >
+            <FontAwesome6
+              name={shouldShowPlayButton ? "play" : "pause"}
+              size={16}
+              color={"#dfdfdf"}
+            />
+          </Animated.View>
         </TouchableOpacity>
       </View>
       <TouchableOpacity
@@ -85,6 +98,7 @@ export default ProgressBar;
 
 const styles = StyleSheet.create({
   playPauseButton: {
+    overflow: "hidden",
     paddingVertical: 4,
     width: 40,
     alignItems: "center",
@@ -96,8 +110,8 @@ const styles = StyleSheet.create({
     alignItems: "flex-start",
   },
   circle: {
-    width: 9,
-    height: 9,
+    width: CIRCLE_SIZE,
+    height: CIRCLE_SIZE,
     borderRadius: 3.5,
     backgroundColor: "#FFFFFF",
   },
