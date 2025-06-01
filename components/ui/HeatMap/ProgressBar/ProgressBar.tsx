@@ -46,9 +46,6 @@ const ProgressBar = ({
   };
 
   const pressHandler = (e: any) => {
-    if (e.nativeEvent.offsetX < CIRCLE_SIZE) {
-      return;
-    }
     const seekingValue = interpolate(
       e.nativeEvent.offsetX,
       [0, layout?.width!],
@@ -90,7 +87,7 @@ const ProgressBar = ({
         onPress={(e) => pressHandler(e)}
         style={{ paddingVertical: 5, flex: 1 }}
       >
-        <View style={{ flexDirection: "row" }}>
+        <View pointerEvents={"none"} style={{ flexDirection: "row" }}>
           <Ionicons
             style={{
               opacity: 0,
@@ -117,7 +114,7 @@ const ProgressBar = ({
 
         <View style={styles.progressContainer}>
           <Animated.View style={[animatedStyle, styles.progressBar]}>
-            <View style={styles.circle} />
+            <View pointerEvents={"none"} style={styles.circle} />
           </Animated.View>
         </View>
       </TouchableOpacity>
