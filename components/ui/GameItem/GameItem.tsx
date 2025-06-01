@@ -12,7 +12,7 @@ import {
   withRepeat,
   withTiming,
 } from "react-native-reanimated";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import ProgressBar from "@/components/ui/HeatMap/ProgressBar/ProgressBar";
 
 const RED_COLOR = "#ff2525";
@@ -29,6 +29,21 @@ const GameItem = ({ gameItem }: { gameItem: Game }) => {
   const tickDuration =
     (gameItem.time * 1000) / gameItem.heatmaps[0].heatmap.length;
 
+  const [shouldShowPlayButton, setShouldShowPlayButton] = useState(true);
+
+  const handlePlayPress = () => {
+    setShouldShowPlayButton((prev) => {
+      if (!prev) {
+        cancelGameAnimation();
+        return true;
+      } else {
+        cancelGameAnimation();
+        startGameAnimation();
+        return false;
+      }
+    });
+  };
+
   const startGameAnimation = () => {
     sharedProgressValue.value = withRepeat(
       withTiming(gameItem.heatmaps[0].heatmap.length - 1, {
@@ -38,13 +53,15 @@ const GameItem = ({ gameItem }: { gameItem: Game }) => {
       }),
       -1,
     );
+    setShouldShowPlayButton(false);
   };
   const cancelGameAnimation = () => {
+    setShouldShowPlayButton(true);
     cancelAnimation(sharedProgressValue);
   };
 
   useEffect(() => {
-    startGameAnimation();
+    // startGameAnimation();
   }, []);
 
   const selectedPlayerId = useSelectedPlayerStore((state) => state.id);
@@ -284,6 +301,8 @@ const GameItem = ({ gameItem }: { gameItem: Game }) => {
         })}
       </View>
       <ProgressBar
+        shouldShowPlayButton={shouldShowPlayButton}
+        handlePlayPress={handlePlayPress}
         startGameAnimation={startGameAnimation}
         cancelGameAnimation={cancelGameAnimation}
         sharedProgressValue={sharedProgressValue}
