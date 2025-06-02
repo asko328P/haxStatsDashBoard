@@ -76,11 +76,11 @@ export default async function GameList() {
       ascending: false,
     })
     .order("id", { referencedTable: "goals", ascending: false })
-    .limit(15)
+    .limit(5)
     .overrideTypes<Array<Game>>();
 
-  console.log("data: ", data);
-  console.log("error", error);
+  // console.log("data: ", data);
+  // console.log("error", error);
   if (!data) return;
 
   return <GamesFlatList games={data} />;

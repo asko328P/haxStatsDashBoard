@@ -76,7 +76,7 @@ export default async function PlayerInfo({
     .maybeSingle()
     .overrideTypes<PlayerInfo>();
 
-  console.log(error);
+  // console.log(error);
   if (!data) return;
 
   // return <Text style={{ color: "white" }}>{"huh"}</Text>;

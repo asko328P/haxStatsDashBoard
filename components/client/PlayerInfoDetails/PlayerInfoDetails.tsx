@@ -70,7 +70,7 @@ type Props = {
 };
 
 const PlayerInfoDetails = ({ player, gameLimit }: Props) => {
-  console.log(player);
+  // console.log(player);
   let scoredGoals = 0;
   let scoredOwnGoals = 0;
   let winRate = 0;
