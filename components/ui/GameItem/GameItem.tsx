@@ -22,7 +22,13 @@ const BLUE_COLOR = "#2196df";
 const BRIGHT_RED_COLOR = "#fbcdc8";
 const DARK_BLUE_COLOR = "#07273a";
 
-const GameItem = ({ gameItem }: { gameItem: Game }) => {
+const GameItem = ({
+  gameItem,
+  fetchSpecificGame,
+}: {
+  gameItem: Game;
+  fetchSpecificGame: (arg0: number) => void;
+}) => {
   const router = useRouter();
   const sharedProgressValue = useSharedValue(1);
 
@@ -69,6 +75,10 @@ const GameItem = ({ gameItem }: { gameItem: Game }) => {
         id: gameItem.id,
       },
     });
+  };
+
+  const handleFetchSpecificGame = () => {
+    fetchSpecificGame(gameItem.id);
   };
 
   const selectedPlayerId = useSelectedPlayerStore((state) => state.id);
@@ -320,7 +330,7 @@ const GameItem = ({ gameItem }: { gameItem: Game }) => {
       </View>
       {!gameItem.heatmaps && (
         <TouchableOpacity
-          onPress={navigateToReplay}
+          onPress={handleFetchSpecificGame}
           style={styles.viewReplayButton}
         >
           <ThemedText style={styles.text}>{"View replay"}</ThemedText>

@@ -63,6 +63,43 @@ const AllGamesFlatList = () => {
     getData();
   }, []);
 
+  const fetchSpecificGame = async (gameId: number) => {
+    const { data } = await supabase
+      .from("games")
+      .select(
+        `
+        *,
+        game_player!inner (
+            id:player_id, team:team_id, players!player_id(id, created_at)),
+            heatmaps!inner(*),
+            goals!inner(player_id, assist_player_id, is_own_goal, time, id, game_player!inner(team_id))
+            )
+    `,
+      )
+      .eq("id", gameId)
+
+      .not("ended_at", "is", null)
+      .order("team_id", {
+        referencedTable: "game_player",
+      })
+      .order("id", {
+        ascending: false,
+      })
+      .order("id", { referencedTable: "goals", ascending: false })
+      .single()
+      .overrideTypes<Game>();
+
+    // @ts-ignore
+    setGamesData((prev) => {
+      return prev.map((oldGame) => {
+        if (oldGame.id === gameId) {
+          return data;
+        }
+        return oldGame;
+      });
+    });
+  };
+
   return (
     <FlatList
       ListEmptyComponent={<CustomActivityIndicator />}
@@ -70,7 +107,9 @@ const AllGamesFlatList = () => {
       maxToRenderPerBatch={5}
       contentContainerStyle={styles.contentContainer}
       data={gamesData}
-      renderItem={({ item }) => <GameItem gameItem={item} />}
+      renderItem={({ item }) => (
+        <GameItem gameItem={item} fetchSpecificGame={fetchSpecificGame} />
+      )}
     />
   );
 };
