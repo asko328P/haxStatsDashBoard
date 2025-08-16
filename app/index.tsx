@@ -16,19 +16,8 @@ export default function Index() {
 
   return (
     <View style={styles.container}>
-      {/*<React.Suspense*/}
-      {/*  fallback={*/}
-      {/*    // The view that will render while the Server Function is awaiting data.*/}
-      {/*    <ActivityIndicator />*/}
-      {/*  }*/}
-      {/*>*/}
-      {/*  /!*{renderInfo({ name: 'World' })}*!/*/}
-      {/*  <View style={styles.gameListHolder}>{memoizedGameList}</View>*/}
-      {/*</React.Suspense>*/}
-
-      {/*{selectedPlayerId && <SelectedPlayerHolder />}*/}
-
       <AllGamesFlatList />
+      {selectedPlayerId && <SelectedPlayerHolder />}
     </View>
   );
 }

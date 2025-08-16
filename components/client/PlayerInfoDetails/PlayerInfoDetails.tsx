@@ -3,6 +3,7 @@
 import { View, Text, StyleSheet } from "react-native";
 import { PlayerInfo } from "@/components/server/PlayerInfo/PlayerInfo";
 import Animated, { FadeIn, FadeInRight } from "react-native-reanimated";
+import CustomActivityIndicator from "@/components/CustomActivityIndicator/CustomActivityIndicator";
 
 const StatHolder = ({
   label,
@@ -65,7 +66,7 @@ const Win = ({
 };
 
 type Props = {
-  player: PlayerInfo;
+  player: PlayerInfo | undefined;
   gameLimit: number;
 };
 
@@ -79,7 +80,7 @@ const PlayerInfoDetails = ({ player, gameLimit }: Props) => {
   let scoredAssists = 0;
 
   //scored goals
-  player.games.forEach((game) => {
+  player?.games.forEach((game) => {
     if (game.winning_team_id === game.game_player[0].team_id) {
       wonGames += 1;
     }
@@ -100,7 +101,7 @@ const PlayerInfoDetails = ({ player, gameLimit }: Props) => {
     <Animated.View entering={FadeIn} style={styles.container}>
       {/*<Text style={styles.text}>{`Last ${gameLimit} matches:`}</Text>*/}
       <View style={styles.winsHolder}>
-        {player.games.map((item, index) => {
+        {player?.games.map((item, index) => {
           return (
             <Win
               key={`${item.id}${gameLimit}${player.id}`}
@@ -109,6 +110,7 @@ const PlayerInfoDetails = ({ player, gameLimit }: Props) => {
             />
           );
         })}
+        {!player?.games && <CustomActivityIndicator />}
       </View>
       <View style={styles.allStatsHolder}>
         <StatHolder label={"Goals scored:"} value={scoredGoals} />

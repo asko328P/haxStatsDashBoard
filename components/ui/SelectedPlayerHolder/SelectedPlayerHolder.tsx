@@ -10,9 +10,11 @@ import {
   View,
 } from "react-native";
 import { useSelectedPlayerStore } from "@/zustand/selectedPlayer/selectedPlayerSlice";
-import React, { useState } from "react";
-import PlayerInfo from "@/components/server/PlayerInfo/PlayerInfo";
+import React, { useEffect, useState } from "react";
 import { AntDesign } from "@expo/vector-icons";
+import { supabase } from "@/lib/supabase";
+import { PlayerInfo } from "@/components/server/PlayerInfo/PlayerInfo";
+import PlayerInfoDetails from "@/components/client/PlayerInfoDetails/PlayerInfoDetails";
 
 const GameLimitTouchable = ({
   id,
@@ -52,6 +54,40 @@ const SelectedPlayerHolder = () => {
   const setSelectedPlayerId = useSelectedPlayerStore((state) => state.set);
 
   const [gameLimit, setGameLimit] = useState(5);
+  const [playerInfoData, setPlayerInfoData] = useState<PlayerInfo>();
+
+  useEffect(() => {
+    const getData = async () => {
+      setPlayerInfoData(undefined);
+      const { data, error } = await supabase
+        .from("players")
+        .select(
+          `*,
+      games!inner(*, goals!left(*), assists:goals!left(*), game_player!inner(*))   
+    `,
+        )
+        .eq("id", playerId)
+        .or(`player_id.eq.${playerId?.toString()}`, {
+          referencedTable: "games.game_player",
+        })
+        .eq("games.assists.assist_player_id", playerId?.toString())
+        .eq("games.goals.player_id", playerId?.toString())
+        .limit(gameLimit, {
+          referencedTable: "games",
+        })
+        .order("id", {
+          referencedTable: "games",
+          ascending: false,
+        })
+        .maybeSingle()
+        .overrideTypes<PlayerInfo>();
+
+      //@ts-ignore
+      setPlayerInfoData(data);
+    };
+
+    getData();
+  }, [playerId]);
 
   const handleCloseButton = () => {
     setSelectedPlayerId(undefined);
@@ -97,15 +133,7 @@ const SelectedPlayerHolder = () => {
       <Text style={styles.text}>{`Last ${gameLimit} matches:`}</Text>
 
       <ScrollView style={styles.playerInfoHolder}>
-        <React.Suspense
-          fallback={
-            // The view that will render while the Server Function is awaiting data.
-            <ActivityIndicator />
-          }
-        >
-          {PlayerInfo({ playerId, gameLimit })}
-          {/*<PlayerInfo playerId={selectedPlayerId} />*/}
-        </React.Suspense>
+        <PlayerInfoDetails player={playerInfoData} gameLimit={gameLimit} />
       </ScrollView>
     </View>
   );
