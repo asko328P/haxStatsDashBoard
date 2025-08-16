@@ -39,6 +39,10 @@ export default function RootLayout() {
           name="index"
           options={{ headerShown: true, title: "Hax Stats Dashboard" }}
         />
+        <Stack.Screen
+          name="viewReplay"
+          options={{ headerShown: true, title: "Replay" }}
+        />
         <Stack.Screen name="+not-found" />
       </Stack>
       <StatusBar style="auto" />

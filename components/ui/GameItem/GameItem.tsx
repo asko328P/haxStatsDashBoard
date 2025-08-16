@@ -1,7 +1,7 @@
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { convertMiliseconds, dateToString } from "@/utility/utilityFunctions";
 import HeatMap from "@/components/ui/HeatMap/HeatMap";
-import { Game } from "@/components/server/GameList/GameList";
+import { Game, Goal } from "@/components/server/GameList/GameList";
 import { useSelectedPlayerStore } from "@/zustand/selectedPlayer/selectedPlayerSlice";
 import {
   cancelAnimation,
@@ -14,6 +14,8 @@ import {
 } from "react-native-reanimated";
 import { useEffect, useState } from "react";
 import ProgressBar from "@/components/ui/HeatMap/ProgressBar/ProgressBar";
+import { ThemedText } from "@/components/ThemedText";
+import { useRouter } from "expo-router";
 
 const RED_COLOR = "#ff2525";
 const BLUE_COLOR = "#2196df";
@@ -21,13 +23,8 @@ const BRIGHT_RED_COLOR = "#fbcdc8";
 const DARK_BLUE_COLOR = "#07273a";
 
 const GameItem = ({ gameItem }: { gameItem: Game }) => {
-  if (gameItem.heatmaps.length === 0) {
-    return;
-  }
+  const router = useRouter();
   const sharedProgressValue = useSharedValue(1);
-
-  const tickDuration =
-    (gameItem.time * 1000) / gameItem.heatmaps[0].heatmap.length;
 
   const [shouldShowPlayButton, setShouldShowPlayButton] = useState(true);
 
@@ -45,6 +42,11 @@ const GameItem = ({ gameItem }: { gameItem: Game }) => {
   };
 
   const startGameAnimation = () => {
+    if (!gameItem.heatmaps || gameItem.heatmaps.length === 0) {
+      return;
+    }
+    const tickDuration =
+      (gameItem.time * 1000) / gameItem.heatmaps[0].heatmap.length;
     sharedProgressValue.value = withRepeat(
       withTiming(gameItem.heatmaps[0].heatmap.length - 1, {
         duration:
@@ -60,9 +62,14 @@ const GameItem = ({ gameItem }: { gameItem: Game }) => {
     cancelAnimation(sharedProgressValue);
   };
 
-  useEffect(() => {
-    // startGameAnimation();
-  }, []);
+  const navigateToReplay = () => {
+    router.push({
+      pathname: "/viewReplay",
+      params: {
+        id: gameItem.id,
+      },
+    });
+  };
 
   const selectedPlayerId = useSelectedPlayerStore((state) => state.id);
   const setSelectedPlayerId = useSelectedPlayerStore((state) => state.set);
@@ -93,6 +100,25 @@ const GameItem = ({ gameItem }: { gameItem: Game }) => {
   if (gameItem.time) {
     duration = convertMiliseconds(Math.round(gameItem.time * 1000));
   }
+
+  const selectGoalHandler = (goal: Goal) => {
+    if (!gameItem.heatmaps || gameItem.heatmaps.length === 0) {
+      return;
+    }
+    const interpolatedValue = interpolate(
+      goal.time - 5,
+      [0, gameItem.time],
+      [0, gameItem.heatmaps[0].heatmap.length - 1],
+      Extrapolation.CLAMP,
+    );
+    cancelGameAnimation();
+    sharedProgressValue.value = interpolatedValue;
+    startGameAnimation();
+  };
+
+  useEffect(() => {
+    startGameAnimation();
+  }, []);
 
   return (
     <View key={gameItem.id} style={styles.renderItem}>
@@ -204,15 +230,7 @@ const GameItem = ({ gameItem }: { gameItem: Game }) => {
             return (
               <TouchableOpacity
                 onPress={() => {
-                  const interpolatedValue = interpolate(
-                    goal.time - 5,
-                    [0, gameItem.time],
-                    [0, gameItem.heatmaps[0].heatmap.length - 1],
-                    Extrapolation.CLAMP,
-                  );
-                  cancelGameAnimation();
-                  sharedProgressValue.value = interpolatedValue;
-                  startGameAnimation();
+                  selectGoalHandler(goal);
                 }}
                 key={goal.id}
                 style={[
@@ -300,16 +318,26 @@ const GameItem = ({ gameItem }: { gameItem: Game }) => {
           );
         })}
       </View>
-      <ProgressBar
-        gameItem={gameItem}
-        goals={gameItem.goals}
-        shouldShowPlayButton={shouldShowPlayButton}
-        handlePlayPress={handlePlayPress}
-        startGameAnimation={startGameAnimation}
-        cancelGameAnimation={cancelGameAnimation}
-        sharedProgressValue={sharedProgressValue}
-        maxValue={gameItem.heatmaps[0].heatmap.length - 1}
-      />
+      {!gameItem.heatmaps && (
+        <TouchableOpacity
+          onPress={navigateToReplay}
+          style={styles.viewReplayButton}
+        >
+          <ThemedText style={styles.text}>{"View replay"}</ThemedText>
+        </TouchableOpacity>
+      )}
+      {gameItem.heatmaps && gameItem.heatmaps.length > 0 && (
+        <ProgressBar
+          gameItem={gameItem}
+          goals={gameItem.goals}
+          shouldShowPlayButton={shouldShowPlayButton}
+          handlePlayPress={handlePlayPress}
+          startGameAnimation={startGameAnimation}
+          cancelGameAnimation={cancelGameAnimation}
+          sharedProgressValue={sharedProgressValue}
+          maxValue={gameItem.heatmaps[0].heatmap.length - 1}
+        />
+      )}
     </View>
   );
 };
@@ -317,6 +345,12 @@ const GameItem = ({ gameItem }: { gameItem: Game }) => {
 export default GameItem;
 
 const styles = StyleSheet.create({
+  viewReplayButton: {
+    alignSelf: "flex-start",
+    borderRadius: 10,
+    backgroundColor: "#2c2c2c",
+    padding: 6,
+  },
   heatMapHolder: {
     alignItems: "center",
   },

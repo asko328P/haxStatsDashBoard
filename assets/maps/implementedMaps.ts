@@ -15,7 +15,15 @@ export const implementedMaps: {
     image: require("@/assets/maps/2v2.png"),
     ...require("@/assets/maps/WFL FUTSAL 2V2.json"),
   },
+  "BAGERI | MEDIUM": {
+    image: require("@/assets/maps/2v2.png"),
+    ...require("@/assets/maps/WFL FUTSAL 2V2.json"),
+  },
   "WFL | BIG": {
+    image: require("@/assets/maps/3v3.png"),
+    ...require("@/assets/maps/WFL FUTSAL 3V3.json"),
+  },
+  "BAGERI | 3V3": {
     image: require("@/assets/maps/3v3.png"),
     ...require("@/assets/maps/WFL FUTSAL 3V3.json"),
   },
