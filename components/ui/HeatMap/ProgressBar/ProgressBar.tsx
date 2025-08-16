@@ -98,6 +98,7 @@ const ProgressBar = ({
           />
           {goals.map((goal, index) => (
             <Ionicons
+              key={goal.id}
               style={[
                 { position: "absolute" },
                 {

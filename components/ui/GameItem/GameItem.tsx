@@ -414,6 +414,9 @@ const styles = StyleSheet.create({
     color: "white",
   },
   renderItem: {
+    alignSelf: "center",
+    maxWidth: "95%",
+    width: 800,
     gap: 10,
     backgroundColor: "#1e1e1e",
     borderWidth: 1,
