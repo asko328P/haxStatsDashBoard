@@ -22,6 +22,8 @@ export type PlayerInfo = {
       created_at: string;
       is_own_goal: false;
       goal_for_team_id: null;
+      goal_speed?: number;
+      goal_distance?: number;
     }[];
     assists: {
       id: number;

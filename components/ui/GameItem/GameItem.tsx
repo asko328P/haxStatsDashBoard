@@ -250,11 +250,13 @@ const GameItem = ({
               >
                 <View style={styles.goalEmojiHolder}>
                   {shouldShowRedGoal && <Text style={styles.ball}>{"⚽"}</Text>}
-                  {goal.goal_speed && goal.goal_distance && (
-                    <Text
-                      style={[styles.goalSpeedText]}
-                    >{`${goal.goal_speed.toFixed(0)} kmh ${goal.goal_distance.toFixed(0)} m`}</Text>
-                  )}
+                  {shouldShowRedGoal &&
+                    goal.goal_speed &&
+                    goal.goal_distance && (
+                      <Text
+                        style={[styles.goalSpeedText]}
+                      >{`${goal.goal_speed.toFixed(0)} kmh ${goal.goal_distance.toFixed(0)} m`}</Text>
+                    )}
                 </View>
 
                 <View style={{ flex: 1, alignItems: "center", gap: 2 }}>
@@ -300,19 +302,16 @@ const GameItem = ({
                   )}
                 </View>
 
-                <View
-                  style={[
-                    styles.goalEmojiHolder,
-                    { justifyContent: "flex-end" },
-                  ]}
-                >
+                <View style={[styles.goalEmojiHolder]}>
+                  {shouldShowBlueGoal &&
+                    goal.goal_speed &&
+                    goal.goal_distance && (
+                      <Text
+                        style={[styles.goalSpeedText, { textAlign: "right" }]}
+                      >{`${goal.goal_speed.toFixed(0)} kmh ${goal.goal_distance.toFixed(0)} m`}</Text>
+                    )}
                   {shouldShowBlueGoal && (
                     <Text style={[styles.ball, { textAlign: "right" }]}>
-                      {goal.goal_speed && goal.goal_distance && (
-                        <Text
-                          style={[styles.goalSpeedText]}
-                        >{`${goal.goal_speed.toFixed(0)} kmh ${goal.goal_distance.toFixed(0)} m`}</Text>
-                      )}
                       {"⚽"}
                     </Text>
                   )}

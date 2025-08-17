@@ -2,9 +2,13 @@ import { ActivityIndicator, ScrollView, StyleSheet, View } from "react-native";
 import { useLocalSearchParams } from "expo-router";
 import React from "react";
 import HeatMapAndReplay from "@/components/server/HeatMapAndReplay/HeatMapAndReplay";
+import SelectedPlayerHolder from "@/components/ui/SelectedPlayerHolder/SelectedPlayerHolder";
+import { useSelectedPlayerStore } from "@/zustand/selectedPlayer/selectedPlayerSlice";
 
 export default function Page() {
   const { id } = useLocalSearchParams<{ id: string }>();
+  const selectedPlayerId = useSelectedPlayerStore((state) => state.id);
+
   return (
     <View style={styles.container}>
       <React.Suspense
@@ -17,6 +21,7 @@ export default function Page() {
           {HeatMapAndReplay({ id: Number(id) })}
         </View>
       </React.Suspense>
+      {selectedPlayerId && <SelectedPlayerHolder />}
     </View>
   );
 }

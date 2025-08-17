@@ -78,6 +78,9 @@ const PlayerInfoDetails = ({ player, gameLimit }: Props) => {
   let wonGames = 0;
   let totalGames = 0;
   let scoredAssists = 0;
+  let totalBallSpeed = 0;
+  let totalGoalDistance = 0;
+  let goalsWithSpeedAndDistanceData = 0;
 
   //scored goals
   player?.games.forEach((game) => {
@@ -94,9 +97,18 @@ const PlayerInfoDetails = ({ player, gameLimit }: Props) => {
       } else {
         scoredGoals += 1;
       }
+      if (goal.goal_speed && goal.goal_distance) {
+        totalBallSpeed += goal.goal_speed;
+        totalGoalDistance += goal.goal_distance;
+        goalsWithSpeedAndDistanceData++;
+      }
     });
     scoredAssists += game.assists.length;
   });
+
+  let goalSpeedAverage = totalBallSpeed / goalsWithSpeedAndDistanceData;
+  let goalDistanceAverage = totalGoalDistance / goalsWithSpeedAndDistanceData;
+
   return (
     <Animated.View entering={FadeIn} style={styles.container}>
       {/*<Text style={styles.text}>{`Last ${gameLimit} matches:`}</Text>*/}
@@ -119,6 +131,14 @@ const PlayerInfoDetails = ({ player, gameLimit }: Props) => {
         <StatHolder
           label={"Win rate:"}
           value={`${Math.round((wonGames / totalGames) * 100)}%`}
+        />
+        <StatHolder
+          label={"Average goal speed:"}
+          value={`${goalSpeedAverage.toFixed(1)} km/h`}
+        />
+        <StatHolder
+          label={"Average goal distance:"}
+          value={`${goalDistanceAverage.toFixed(1)} m`}
         />
       </View>
       {/*<Text style={{ color: "#9a9a9a", flexShrink: 1 }}>*/}
