@@ -248,8 +248,13 @@ const GameItem = ({
                   index % 2 === 0 && { backgroundColor: "#353535" },
                 ]}
               >
-                <View style={{ flex: 0.4 }}>
+                <View style={styles.goalEmojiHolder}>
                   {shouldShowRedGoal && <Text style={styles.ball}>{"⚽"}</Text>}
+                  {goal.goal_speed && goal.goal_distance && (
+                    <Text
+                      style={[styles.goalSpeedText]}
+                    >{`${goal.goal_speed.toFixed(0)} kmh ${goal.goal_distance.toFixed(0)} m`}</Text>
+                  )}
                 </View>
 
                 <View style={{ flex: 1, alignItems: "center", gap: 2 }}>
@@ -295,9 +300,19 @@ const GameItem = ({
                   )}
                 </View>
 
-                <View style={{ flex: 0.4 }}>
+                <View
+                  style={[
+                    styles.goalEmojiHolder,
+                    { justifyContent: "flex-end" },
+                  ]}
+                >
                   {shouldShowBlueGoal && (
                     <Text style={[styles.ball, { textAlign: "right" }]}>
+                      {goal.goal_speed && goal.goal_distance && (
+                        <Text
+                          style={[styles.goalSpeedText]}
+                        >{`${goal.goal_speed.toFixed(0)} kmh ${goal.goal_distance.toFixed(0)} m`}</Text>
+                      )}
                       {"⚽"}
                     </Text>
                   )}
@@ -355,6 +370,16 @@ const GameItem = ({
 export default GameItem;
 
 const styles = StyleSheet.create({
+  goalEmojiHolder: {
+    flex: 0.4,
+    flexDirection: "row",
+    gap: 4,
+    alignItems: "center",
+  },
+  goalSpeedText: {
+    fontSize: 9,
+    color: "#7a7a7a",
+  },
   viewReplayButton: {
     alignSelf: "flex-start",
     borderRadius: 10,

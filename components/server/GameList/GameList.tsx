@@ -30,6 +30,8 @@ export type Goal = {
   };
   is_own_goal: boolean;
   assist_player_id?: string;
+  goal_speed?: number;
+  goal_distance?: number;
 };
 export type Game = {
   id: number;

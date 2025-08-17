@@ -21,7 +21,7 @@ const AllGamesFlatList = () => {
         game_player!inner (
             id:player_id, team:team_id, players!player_id(id, created_at)),
             heatmaps!inner(*),
-            goals!inner(player_id, assist_player_id, is_own_goal, time, id, game_player!inner(team_id))
+            goals!inner(player_id, assist_player_id, is_own_goal, time, id, game_player!inner(team_id), goal_speed, goal_distance)
             )
     `,
         )
@@ -43,7 +43,7 @@ const AllGamesFlatList = () => {
         *,
         game_player!inner (
             id:player_id, team:team_id, players!player_id(id, created_at)),
-            goals!inner(player_id, assist_player_id, is_own_goal, time, id, game_player!inner(team_id))
+            goals!inner(player_id, assist_player_id, is_own_goal, time, id, game_player!inner(team_id), goal_speed, goal_distance)
             )
     `,
         )
