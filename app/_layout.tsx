@@ -37,7 +37,7 @@ export default function RootLayout() {
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
         <Stack.Screen
           name="index"
-          options={{ headerShown: true, title: "Hax Stats Dashboard" }}
+          options={{ headerShown: false, title: "Hax Stats Dashboard" }}
         />
         <Stack.Screen
           name="viewReplay"

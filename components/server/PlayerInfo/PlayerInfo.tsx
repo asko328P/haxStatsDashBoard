@@ -18,7 +18,7 @@ export type PlayerInfo = {
     time: number;
     goals: {
       id: number;
-      time: null;
+      time: number;
       created_at: string;
       is_own_goal: false;
       goal_for_team_id: null;
@@ -27,10 +27,13 @@ export type PlayerInfo = {
     }[];
     assists: {
       id: number;
-      time: null;
+      time: number;
       created_at: string;
       is_own_goal: false;
       goal_for_team_id: null;
+    }[];
+    saves: {
+      time: number;
     }[];
     game_player: [
       {

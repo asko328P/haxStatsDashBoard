@@ -81,9 +81,11 @@ const PlayerInfoDetails = ({ player, gameLimit }: Props) => {
   let totalBallSpeed = 0;
   let totalGoalDistance = 0;
   let goalsWithSpeedAndDistanceData = 0;
+  let totalSaves = 0;
 
   //scored goals
   player?.games.forEach((game) => {
+    totalSaves += game.saves.length;
     if (game.winning_team_id === game.game_player[0].team_id) {
       wonGames += 1;
     }
@@ -140,6 +142,7 @@ const PlayerInfoDetails = ({ player, gameLimit }: Props) => {
           label={"Average goal distance:"}
           value={`${goalDistanceAverage.toFixed(1)} m`}
         />
+        <StatHolder label={"Number of saves:"} value={totalSaves} />
       </View>
       {/*<Text style={{ color: "#9a9a9a", flexShrink: 1 }}>*/}
       {/*  {JSON.stringify(player)}*/}

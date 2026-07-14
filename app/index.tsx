@@ -7,6 +7,7 @@ import { useSelectedPlayerStore } from "@/zustand/selectedPlayer/selectedPlayerS
 import SelectedPlayerHolder from "@/components/ui/SelectedPlayerHolder/SelectedPlayerHolder";
 import { supabase } from "@/lib/supabase";
 import AllGamesFlatList from "@/components/AllGamesFlatList/AllGamesFlatList";
+import InfoBox from "@/components/InfoBox/InfoBox";
 
 const FIRST_RANGE_LIMIT = 5;
 const SECOND_RANGE_LIMIT = 30;
@@ -16,6 +17,7 @@ export default function Index() {
 
   return (
     <View style={styles.container}>
+      <InfoBox />
       <AllGamesFlatList />
       {selectedPlayerId && <SelectedPlayerHolder />}
     </View>
@@ -32,9 +34,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   container: {
-    flexDirection: "row",
-    justifyContent: "center",
-    paddingHorizontal: 10,
+    paddingHorizontal: 0,
     // alignItems: "center",
     maxHeight: "100%",
   },

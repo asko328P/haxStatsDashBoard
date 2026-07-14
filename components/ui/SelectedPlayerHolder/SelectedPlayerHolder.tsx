@@ -63,7 +63,7 @@ const SelectedPlayerHolder = () => {
         .from("players")
         .select(
           `*,
-      games!inner(*, goals!left(*), assists:goals!left(*), game_player!inner(*))   
+      games!inner(*, goals!left(*), assists:goals!left(*), saves!left(*), game_player!inner(*))   
     `,
         )
         .eq("id", playerId)
@@ -72,6 +72,7 @@ const SelectedPlayerHolder = () => {
         })
         .eq("games.assists.assist_player_id", playerId?.toString())
         .eq("games.goals.player_id", playerId?.toString())
+        .eq("games.saves.player_id", playerId?.toString())
         .limit(gameLimit, {
           referencedTable: "games",
         })
@@ -84,10 +85,12 @@ const SelectedPlayerHolder = () => {
 
       //@ts-ignore
       setPlayerInfoData(data);
+
+      console.log(data);
     };
 
     getData();
-  }, [playerId]);
+  }, [playerId, gameLimit]);
 
   const handleCloseButton = () => {
     setSelectedPlayerId(undefined);
